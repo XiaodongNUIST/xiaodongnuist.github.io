@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>python安装 | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+conda安装库的规则
+requirements
+jupyterlab 安装设置
+生成配置文件
+安装拓展
+导出html 隐藏代码
+字体设置成Helvetica
+镜像设置
+
+临时使用
+设为默认
+conda添加镜像
+
+
+
+
+conda安装库的..." />
+    <meta name="keywords" content="software" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">python安装</h2>
+            <div class="post-date">2022-10-25</div>
+            
+            <div class="post-content" v-pre>
+              <p><ul class="markdownIt-TOC">
+<li><a href="#conda%E5%AE%89%E8%A3%85%E5%BA%93%E7%9A%84%E8%A7%84%E5%88%99">conda安装库的规则</a></li>
+<li><a href="#requirements">requirements</a></li>
+<li><a href="#jupyterlab-%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AE">jupyterlab 安装设置</a></li>
+<li><a href="#%E7%94%9F%E6%88%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">生成配置文件</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85%E6%8B%93%E5%B1%95">安装拓展</a></li>
+<li><a href="#%E5%AF%BC%E5%87%BAhtml-%E9%9A%90%E8%97%8F%E4%BB%A3%E7%A0%81">导出html 隐藏代码</a></li>
+<li><a href="#%E5%AD%97%E4%BD%93%E8%AE%BE%E7%BD%AE%E6%88%90helvetica">字体设置成Helvetica</a></li>
+<li><a href="#%E9%95%9C%E5%83%8F%E8%AE%BE%E7%BD%AE">镜像设置</a>
+<ul>
+<li><a href="#%E4%B8%B4%E6%97%B6%E4%BD%BF%E7%94%A8">临时使用</a></li>
+<li><a href="#%E8%AE%BE%E4%B8%BA%E9%BB%98%E8%AE%A4">设为默认</a></li>
+<li><a href="#conda%E6%B7%BB%E5%8A%A0%E9%95%9C%E5%83%8F">conda添加镜像</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h1 id="conda安装库的规则">conda安装库的规则</h1>
+<ul>
+<li>channel的配置
+<ul>
+<li>默认的conda channel是defaults，但这个channel的代码包不全。我的建议使用conda-forge channel，并设置严格优先使用conda-forge</li>
+<li>设置镜像的时候，main和free结尾的对应defaults,所以需要将conda-forge的优先级设置为最高，比如用清华源可以如下设置</li>
+</ul>
+</li>
+</ul>
+<pre><code>    (atmos) xdxie@admin[~]$ cat ~/.condarc
+    channels:
+      - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
+      - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+      - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+      - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/
+      - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/menpo/
+      - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/
+      - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/msys2/
+      - conda-forge
+      - defaults
+    show_channel_urls: true
+    channel_priority: strict
+    always_yes: true 
+</code></pre>
+<ul>
+<li>
+<p>查看可用的版本</p>
+<ul>
+<li><strong><code>conda search keras</code></strong></li>
+</ul>
+</li>
+<li>
+<p>安装特定的版本</p>
+</li>
+<li>
+<p>conda install -c conda-forge keras=1.0.7=py27_0</p>
+</li>
+<li>
+<p>xgboost                        1.1.1  py36h831f99a_0  anaconda/cloud/conda-forge<br>
+xgboost                        1.1.1  py37h3340039_0  anaconda/cloud/conda-forge<br>
+xgboost                        1.1.1  py38h950e882_0  anaconda/cloud/conda-forge</p>
+</li>
+</ul>
+<h1 id="requirements">requirements</h1>
+<ul>
+<li>conda install --yes --file requirements.txt</li>
+</ul>
+<pre><code class="language-python">wrf-python
+cartopy
+cmaps
+seaborn
+pygrib
+netCDF4
+
+# xgboost 版本1.1.1
+xgboost=1.1.1
+
+
+conda install --yes --file requirements.txt
+
+pip install https://github.com/j08lue/pycpt/archive/master.zip
+    
+
+</code></pre>
+<ul>
+<li>pycpt 导入cpt配色方案</li>
+</ul>
+<p><a href="https://github.com/j08lue/pycpt">GitHub - j08lue/pycpt: Python tools to load and handle cpt (GMT format) color maps for use with matplotlib, e.g. from cpt-city</a></p>
+<p>https://github.com/j08lue/pycpt</p>
+<h1 id="jupyterlab-安装设置">jupyterlab 安装设置</h1>
+<ul>
+<li>安装miniconda</li>
+<li>conda install jupyterlab</li>
+<li>复制一个快捷方式，修改成：</li>
+<li><code>C:\Software\conda\python.exe C:\Software\conda\cwp.py C:\Software\conda C:\Software\conda\python.exe C:\Software\conda\Scripts\jupyter-lab-script.py &quot;D:\云文件\代码\python\jupyter&quot;</code></li>
+<li>并且起始位置改成最后的那句 D:\云文件\代码\python\jupyter</li>
+</ul>
+<h1 id="生成配置文件">生成配置文件</h1>
+<ul>
+<li>jupyter lab --generate-config</li>
+<li>单独的浏览器窗口, 修改config文件中的</li>
+<li>c.NotebookApp.browser = 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe --app=%s'</li>
+<li><em>c.NotebookApp.notebook_dir = ''</em></li>
+</ul>
+<h1 id="安装拓展">安装拓展</h1>
+<ul>
+<li>打开jupyterlab，enable拓展</li>
+<li>关闭jupyterlab，安装nodejs： conda install nodejs</li>
+<li>安装拓展，如：jupyter labextension install @jupyterlab/toc</li>
+</ul>
+<h1 id="导出html-隐藏代码">导出html 隐藏代码</h1>
+<pre><code class="language-python">jupyter nbconvert Fig1_obs.vs.pred.ipynb --no-input --to html
+</code></pre>
+<h1 id="字体设置成helvetica">字体设置成Helvetica</h1>
+<ul>
+<li>
+<p>下载Helvetica.ttf 文件</p>
+</li>
+<li>
+<p>找到matplotlib文件位置</p>
+<ul>
+<li>
+<pre><code class="language-python">import matplotlib
+print(matplotlib.matplotlib_fname())
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>把字体文件移动到 matplotlib/mpl-data/fonts/ttf</p>
+</li>
+<li>
+<p>修改 matplotlibrc文件</p>
+<ul>
+<li>
+<pre><code class="language-python"># 改成这样 Helvetica 在最前面
+font.sans-serif : Helvetica, DejaVu Sans, Bitstream Vera Sans, Computer Modern Sans Serif, Lucida Grande, Verdana, Geneva, Lucid, Arial, Avant Garde, sans-serif
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>删除缓存文件</p>
+</li>
+<li>
+<pre><code class="language-bash">$ cd ~/.matplotlib`
+`$ rm fontlist*
+</code></pre>
+</li>
+</ul>
+<h1 id="镜像设置">镜像设置</h1>
+<h2 id="临时使用">临时使用</h2>
+<p>pip install -i https://pypi.tuna.tsinghua.edu.cn/simple some-package<br>
+注意，simple 不能少, 是 https 而不是 http</p>
+<h2 id="设为默认">设为默认</h2>
+<p>升级 pip 到最新的版本 (&gt;=10.0.0) 后进行配置：</p>
+<p>pip install pip -U<br>
+pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</p>
+<p>如果您到 pip 默认源的网络连接较差，临时使用本镜像站来升级 pip：</p>
+<p>pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U</p>
+<h2 id="conda添加镜像">conda添加镜像</h2>
+<pre><code>conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud//pytorch/
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
+conda config --set show_channel_urls yes
+</code></pre>
+<p>显示已经有的源</p>
+<pre><code>conda config --show channels
+</code></pre>
+<p>链接：https://www.jianshu.com/p/7e663bb0d904</p>
+<pre><code class="language-shell">
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+  - conda-forge
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge
+  - esri
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/menpo/
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/msys2/
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+  - defaults
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/usdpDJFEm1/" class="tag">
+                    software
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/hexo备份/">
+                  <h3 class="post-title">
+                    hexo备份
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

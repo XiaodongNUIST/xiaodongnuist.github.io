@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>WRF/Chem模式运行说明 | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+WRFChem运行
+
+目录说明
+运行流程
+注意事项
+
+
+WRFChem后处理
+
+基本思路
+初步脚本（需要不断完善）
+
+
+
+
+WRFChem运行
+目录说明
+
+运行wrfchem的程序和脚本在 /home/xdxie/data/wrfchem..." />
+    <meta name="keywords" content="WRF-Chem" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">WRF/Chem模式运行说明</h2>
+            <div class="post-date">2022-10-25</div>
+            
+            <div class="post-content" v-pre>
+              <p><ul class="markdownIt-TOC">
+<li><a href="#wrfchem%E8%BF%90%E8%A1%8C">WRFChem运行</a>
+<ul>
+<li><a href="#%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E">目录说明</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B">运行流程</a></li>
+<li><a href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">注意事项</a></li>
+</ul>
+</li>
+<li><a href="#wrfchem%E5%90%8E%E5%A4%84%E7%90%86">WRFChem后处理</a>
+<ul>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF">基本思路</a></li>
+<li><a href="#%E5%88%9D%E6%AD%A5%E8%84%9A%E6%9C%AC%E9%9C%80%E8%A6%81%E4%B8%8D%E6%96%AD%E5%AE%8C%E5%96%84">初步脚本（需要不断完善）</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h1 id="wrfchem运行">WRFChem运行</h1>
+<h2 id="目录说明">目录说明</h2>
+<ul>
+<li>运行wrfchem的程序和脚本在 /home/xdxie/data/wrfchemdata/beijing201612</li>
+<li>只需要复制 presource  scripts  WPS WRFChem-3.9.1-revised这几个文件夹</li>
+</ul>
+<pre><code class="language-shell">  WPS/WRFChem-3.9.1-revised: 主程序
+  （WRF文件夹是WRF391 default版本，WRFChem-3.9.1-revised是WRF391李楠组版本，修改了SO4/GLY，见Li et al, EI，2022）
+  
+  scripts：运行脚本
+  
+  presource：运行前准备程序和文件
+  	presource/domain：地形文件和namelist文件，需要在运行之前生成geo文件，并将相关文件复制到该目录
+  	presource/*emiss：生成排放文件的程序
+  	presource/mozbc：生成边界条件的程序
+  
+  data：结果数据文件
+  	data/camchem：全球模式提供边界条件（需要自己下载对应的模拟时段数据，见下面说明）
+  	data下其他文件夹为对应case的结果文件,以basecase为例，包括
+  		data/basecase/predata：排放、fnl链接（需要手动创建fnl目录，并将需要的fnl数据链接到该目录下）
+  		data/basecase/runwrfchem：wrf运行目录
+  		data/basecase/combine：处理后的wrfout文件
+          data/basecase/results：提取的文本文件
+          data/basecase/figures：出图文件
+</code></pre>
+<h2 id="运行流程">运行流程</h2>
+<ul>
+<li>
+<p>第一次运行需要设置domain和生成geo_em文件，WRF培训时有介绍</p>
+</li>
+<li>
+<p>之后的所有运行步骤都在autorun.wrfchem.sh这个脚本中</p>
+</li>
+</ul>
+<pre><code class="language-shell">step1_wps: 运行ungrib.exe和metgrid.exe
+step2_real_w_o_chem: 运行不带化学过程的real.exe,这一步namelist中chem_opt要设置为0
+step3_emission： 生成排放，这一步中人为排放部分需要在admin上运行，需要自己安装matlab
+step4_real_w_chem： 运行带化学过程的real.exe
+step5_mozbc: 使用camchem数据添加边界文件
+step6_wrf： 运行wrf.exe
+step7_wrf_from_existing_case：当step1-5不需要重新运行时，快速开始其他case的运行
+</code></pre>
+<ul>
+<li>
+<p>运行的时候每次打开一个step，1-5步骤可以直接ssh到一个计算节点上，输入<code>./autorun.wrfchem.sh</code>运行</p>
+</li>
+<li>
+<p>setp6或者step7需要使用pbs提交，修改wrfchem.jobs，然后在登录节点上输入<code>qsub wrfchem.jobs</code>提交任务</p>
+</li>
+</ul>
+<h2 id="注意事项">注意事项</h2>
+<ul>
+<li>下载camchem数据，路径<code>https://www.acom.ucar.edu/cam-chem/cam-chem.shtml</code>， 根据你的研究区域和时间下载对应文件，如<code>lat,10.0,60.0 lon,60.0,160.0 </code></li>
+<li><code>chem_opt=203: SAPRC99_MOSAIC_8BIN_VBS2_AQ_KPP; SAPRC99 Chemistry with MOSAIC using KPP library. The MOSAIC aerosols uses 8 sectional aerosol bins and includes volatility basis set (VBS) for organic aerosol evolution. Also include aqueous phase chemistry.</code> 在李楠的版本中，该选项对应MOSAIC_4bin</li>
+<li>安装时候的问题：configure之后需要修改下configure.wrf文件，mpif90改成mpiifort</li>
+<li>处理排放问题：人为排放处理需要matlab，必须在admin上运行</li>
+<li>边界条件处理，mozbc，目前使用camchem， domain1：ic、bc都需要，其他domain，只需要ic， 运行wrf.exe时必须设置<code>have_bcs_chem = .true. </code></li>
+</ul>
+<h1 id="wrfchem后处理">WRFChem后处理</h1>
+<h2 id="基本思路">基本思路</h2>
+<ul>
+<li>wrfout文件很大，为了方便提取，第一步将需要的变量从wrfout文件中提取出来，生成新的nc文件 （step1_extra2nc.py）</li>
+<li>然后再对新的nc文件处理 （step2,3,4等）</li>
+</ul>
+<h2 id="初步脚本需要不断完善">初步脚本（需要不断完善）</h2>
+<ul>
+<li>路径<code>/home/xdxie/archive/tools/python_script/wrfchem_tools/extract_wrfchem</code>, 会随时修改，建议copy到自己的目录下</li>
+<li>脚本说明：</li>
+</ul>
+<pre><code class="language-shell">config.wrfchem.S99M8binVBS2AQ # 总的配置文件，需要用户自己修改，包括路径、时间、站点、变量等
+step1_extra2nc.py # 根据上面配置文件中的变量定义从wrfout中提取变量到nc， 放在data/basecase/combine文件夹
+step2.xxx.py # 从上面的nc文件中提取站点的数据，包括气象和污染物的，以及观测的（观测的只写了污染物的脚本，气象的没写要自己弄）
+step3.xxx.py # 一些画图脚本，计算统计参数脚本，不够完善，自己改改
+
+csv文件 # 站点信息的文件和城市经纬度信息文件
+</code></pre>
+<ul>
+<li>画空间图的脚本，<code>/home/xdxie/archive/tools/python_script/wrfchem_tools/regional.plot</code>， 用ncl的程序就行</li>
+</ul>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/ygY1rU5SGV/" class="tag">
+                    WRF-Chem
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/cartopy/">
+                  <h3 class="post-title">
+                    cartopy
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>matplotlib绘图细节设置 | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="导入相关库
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.mathtext import _mathtext as mathtext
+from mat..." />
+    <meta name="keywords" content="visualization" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">matplotlib绘图细节设置</h2>
+            <div class="post-date">2022-10-25</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="导入相关库">导入相关库</h2>
+<pre><code class="language-python">import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.mathtext import _mathtext as mathtext
+from matplotlib.pyplot import MultipleLocator
+mathtext.FontConstantsBase.sup1 = 0.5
+mathtext.FontConstantsBase.sub1 = 0.3
+mathtext.FontConstantsBase.sub2 = 0.3
+import warnings
+warnings.filterwarnings(&quot;ignore&quot;)
+
+config = {
+    &quot;font.family&quot;: 'sans-serif',
+    &quot;font.sans-serif&quot;: [&quot;Arial&quot;],
+    &quot;font.size&quot;: 8,
+    &quot;pdf.fonttype&quot; : 42,
+    &quot;mathtext.fontset&quot;: &quot;custom&quot;,
+    'mathtext.rm' : 'Arial',
+    &quot;mathtext.default&quot;: &quot;rm&quot;,
+
+    'xtick.direction': 'in',
+    'xtick.major.size':  2,
+    'xtick.minor.size':  1,
+    'xtick.major.pad':   2,
+
+    'ytick.direction': 'in',
+    'ytick.major.size':  2,
+    'ytick.minor.size':  1,
+    'ytick.major.pad':   2,
+}
+plt.rcParams.update(config)
+
+# 打开上边和右边坐标轴的tick
+config = {
+    'xtick.direction': 'in',
+    'ytick.direction': 'in',
+    'xtick.major.size':  2,
+    'xtick.minor.size':  1.5,
+    'ytick.major.size':  2,
+    'ytick.minor.size':  1.5,
+    'xtick.top': True,
+    'ytick.right': True,
+
+}
+plt.rcParams.update(config)
+</code></pre>
+<h2 id="通过kwargs给函数传递参数">通过kwargs给函数传递参数</h2>
+<ul>
+<li><strong>好处</strong>：使代码简洁化，且能保持设置的一致性，推荐使用！！！</li>
+</ul>
+<pre><code class="language-python">kwargs = {&quot;width&quot;:width,&quot;color&quot;:colors[0],&quot;lw&quot;:0.,&quot;ec&quot;:'k'}
+ax.bar(x+i*width*1.1,data0[:,i],hatch=hatchs[i],**kwargs)
+</code></pre>
+<h2 id="坐标轴相关设置">坐标轴相关设置</h2>
+<pre><code class="language-python"># 设置坐标轴范围
+ax.set_ylim(0,100)
+ax.set_xlim(0,100)
+
+# 设置坐标轴ticks
+## 手动设置labels和ticks位置
+ax.set_xticks([1,2,3,4])
+ax.set_xticklabels([&quot;2013  &quot;,&quot;Mete&quot;,&quot;Emis&quot;,&quot;  2017&quot;],rotation=0.,fontsize=6)
+ax.set_yticks(np.linspace(0,60,4,dtype=&quot;int&quot;))
+ax.set_yticklabels(np.linspace(0,60,4,dtype=&quot;int&quot;))
+## 隐藏ticks
+ax.set_xticks([])
+
+# 设置主、次要ticks (几种方法)
+## 手动设置
+from matplotlib.pyplot import MultipleLocator
+ax.yaxis.set_minor_locator(MultipleLocator(5))
+ax.yaxis.set_major_locator(MultipleLocator(25))
+## 手动设置
+ax.set_xticks(np.linspace(0,30,6))
+ax.set_xticks(np.linspace(0,30,31),minor=True)
+## 自动生成
+ax.minorticks_on()
+
+# 关闭坐标轴
+ax.set_axis_off()
+
+# 隐藏坐标轴，设置线条粗细，一般不需要
+ax.get_xaxis().set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.spines['bottom'].set_visible(True) # 可见
+axi.spines['bottom'].set_linewidth(0.5) # 线条粗细
+axi.spines['left'].set_linewidth(0.5)
+</code></pre>
+<h2 id="图例设置">图例设置</h2>
+<pre><code class="language-python">## 添加legend - 自动生成
+ax4.legend(frameon =False, # 边框
+        ncol=6, # 列数量
+        loc=2,  # 位置
+        # loc=[0.5, 0.5], # 位置
+        handletextpad =0.3,   # handle和文字距离
+        columnspacing=0.5,    # 列间距
+        labelspacing=0.1,     # 行间距
+        handlelength=1., )    # handle长度
+## 添加legend - 手动设置
+n1,n2 = [],[]
+cat_order = [' 0-12 h', '12-24 h', '24-36 h', '36-48 h', '48-60 h','60-72 h','72-84 h', '84-96 h', '96-108 h', '&gt;108 h']
+for i in range(10):
+    n1.append(axs[-1].bar(0, 0,color=colors[i]))
+l1 = axs[-1].legend(n1,cat_order,loc=[0.08, -0.05], frameon=False,
+                ncol=3, handletextpad=0.1, columnspacing=0.8, handlelength=1.,prop={'size':5})
+for i in range(3):
+    n2.append(axs[-1].bar(0, 0,color=&quot;#dadada&quot;, hatch=hatchs[i]*2))
+l2 = axs[-1].legend(n2, ['M13E13','M17E13','M17E17'], loc=[0.08,0.8], frameon=False, 
+                ncol=3, handletextpad=0.1, columnspacing=0.5, handlelength=1.,prop={'size':5})
+axs[-1].add_artist(l1)
+## pandas或者seaborn画图，删除默认的legend
+ax.get_legend().remove()
+
+## 填色图的图例 - colorbar - 需要自己改改
+l, b, w, h = ax1.get_position().bounds
+b, h = 0.09, 0.12
+position=fig.add_axes([l+0.02, b, 0.16, h/10]) #位置[左,下,长，高]
+cbar = plt.colorbar(cs1,cax=position,orientation=&quot;horizontal&quot;)
+cbar.ax.tick_params(axis='x', direction='in',length=10,labelsize=15)
+cticks= np.linspace(zmin, zmax, num=11, dtype=int); cbar.set_ticks(cticks); cbar.set_ticklabels(cticks)
+</code></pre>
+<h2 id="添加文字说明">添加文字说明</h2>
+<pre><code class="language-python"># 添加文字
+## 一般用于子图中
+ax.text(-0.18,0.95,&quot;(b)&quot;,transform=ax.transAxes,fontsize=10,fontweight=&quot;bold&quot;)
+## 整体画布中使用
+fig.text(0.5,0,r&quot;$PM_{2.5}\ concentrations\ (\mu g\ m^{-3})$&quot;,ha=&quot;center&quot;)
+
+# 标题 
+## 坐标轴标题
+ax.set_ylabel(r'$Probability\ density\ (\times 10^{-3})$')
+## 主标题，通过y改变位置
+ax.set_title(title,y=0.85)
+</code></pre>
+<h2 id="添加辅助线和阴影区域">添加辅助线和阴影区域</h2>
+<pre><code class="language-python"># 横、竖线条
+ax.axvline(x=150,c=&quot;k&quot;,lw=0.2,ls=&quot;-&quot;)
+ax.axhline(y=150,c=&quot;k&quot;,lw=0.2,ls=&quot;-&quot;)
+
+# 竖的阴影区域，如用于标记污染天、夜间
+kwargs = {&quot;alpha&quot;:0.5,&quot;color&quot;:&quot;grey&quot;,&quot;ec&quot;:None}
+ax.axvspan(x[0], x[snight],**kwargs )
+for i in range(ndays-1):
+    ax.axvspan(x[enight+i*24],x[snight+24+i*24],**kwargs)
+    ax.axvspan(x[enight+(ndays-1)*24],x[-1],**kwargs)
+</code></pre>
+<h2 id="添加right-y-axis">添加right-y-axis</h2>
+<pre><code class="language-python">axw = ax.twinx()
+## 设置一个特定颜色
+rycolor = '#ae24d1'
+kwargs = {&quot;ms&quot;:1,&quot;c&quot;:rycolor}
+axw.plot(x,y,**kwargs)
+axw.tick_params(axis='y', colors=rycolor)
+axw.spines['right'].set_color(rycolor)
+</code></pre>
+<h2 id="颜色设置">颜色设置</h2>
+<pre><code class="language-python">## 改变默认的颜色循环
+import matplotlib as mpl
+mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color = [&quot;#0073C2FF&quot;,&quot;#EFC000FF&quot;,&quot;#868686FF&quot;,&quot;#CD534CFF&quot;,&quot;#7AA6DCFF&quot;,&quot;#003C67FF&quot;,&quot;#8F7700FF&quot;,&quot;#3B3B3BFF&quot;,&quot;#A73030FF&quot;])
+
+## 从colormap中提取几个颜色
+from mycolorpy import colorlist as mcp
+colors=mcp.gen_color(cmap=&quot;Blues&quot;,n=11)
+### 或者
+import cmaps
+colors = cmaps.MPL_Dark2.colors[::-12,:] 
+colors = colors[0:10,:]
+colors = colors[::-1,:]
+
+## 自己设计colormap （类似于在gnuplot中的设置，根据nodes的位置[0-1]来指定设置颜色）
+from matplotlib.colors import LinearSegmentedColormap
+colors = [&quot;white&quot;, &quot;#e9e9fc&quot;, &quot;blue&quot;, &quot;green&quot;,&quot;yellow&quot;,&quot;red&quot;]
+nodes = [0.0, 0.01, 0.1, 0.25, 0.5, 1.0]
+mycmap = LinearSegmentedColormap.from_list(&quot;mycmap&quot;, list(zip(nodes, colors)))
+
+# 组分颜色
+colordict = {&quot;SO4&quot;:&quot;#e40b16&quot;,&quot;NO3&quot;:&quot;#211cc0&quot;,&quot;NH4&quot;:&quot;#e79700&quot;,&quot;OC&quot;:&quot;#70dc11&quot;,&quot;EC&quot;:&quot;#000000&quot;,
+             &quot;Cl&quot;:&quot;#cb01a7&quot;,&quot;POA&quot;:&quot;#00cc67&quot;,&quot;SOA&quot;:&quot;#00994d&quot;}
+</code></pre>
+<ul>
+<li><code>color = [&quot;#0073C2FF&quot;,&quot;#EFC000FF&quot;,&quot;#868686FF&quot;,&quot;#CD534CFF&quot;,&quot;7AA6DCFF&quot;,&quot;#003C67FF&quot;,&quot;#8F7700FF&quot;,&quot;#3B3B3BFF&quot;,&quot;#A73030FF&quot;]</code><br>
+<img src="https://xiaodongnuist.github.io/post-images/1703229579043.png" alt="" loading="lazy"></li>
+</ul>
+<h3 id="blind-friendly-colors">blind friendly colors</h3>
+<ul>
+<li>
+<p><code>colorblind = [&quot;#006ba4&quot;,&quot;#ff800e&quot;,&quot;#ababab&quot;,&quot;#595959&quot;,&quot;#5f9ed1&quot;,&quot;#c85200&quot;,&quot;#898989&quot;,&quot;#a2c8ec&quot;,&quot;#ffbc79&quot;,&quot;#cfcfcf&quot;]</code><br>
+<img src="https://xiaodongnuist.github.io/post-images/1703229566265.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>从cmap提取n个颜色</p>
+<ul>
+<li>
+<pre><code class="language-python">from mycolorpy import colorlist as mcp
+colors=mcp.gen_color(cmap=&quot;viridis&quot;,n=9)
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>自定义颜色</p>
+<ul>
+<li>
+<pre><code class="language-python">from matplotlib.colors import LinearSegmentedColormap
+colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c']
+nodes = [0.0, 0.01, 0.1, 0.25, 0.5, 1.0]
+mycmap = LinearSegmentedColormap.from_list(&quot;mycmap&quot;, list(zip(nodes, colors)))
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="创建子图">创建子图</h2>
+<pre><code class="language-python"># 规则的子图 （n, m）
+## 方法1 - subplots 基本版
+fig, axs= plt.subplots(4,3,figsize=(5,5),sharex=False,sharey=False)
+fig.subplots_adjust(hspace=0.1,wspace=0.2)
+axs = axs.flatten()
+
+## 方法2 - gridspec
+import matplotlib.gridspec as gridspec
+fig = plt.figure(figsize=(6,2))
+gs = gridspec.GridSpec(nrows=2, ncols=1, height_ratios=[1.4,2])
+fig.subplots_adjust(hspace=0.,wspace=0.28)
+ax1 = fig.add_subplot(gs[0,:])
+ax2 = fig.add_subplot(gs[1,:])
+axs = [ax1,ax2]
+
+# 不规则的子图 （n, m）
+## 方法3 - subplots 进阶版
+fig = plt.figure(figsize=(8, 6))
+ax1= fig.add_subplot(3,3,1)
+ax2= fig.add_subplot(3,3,2)
+ax3= fig.add_subplot(3,3,4)
+ax4= fig.add_subplot(3,3,5)
+ax5= fig.add_subplot(3,3,7)
+ax6= fig.add_subplot(3,3,8)
+
+ax7= fig.add_subplot(2,3,3)
+ax8= fig.add_subplot(2,3,6)
+
+## 方法4 - subplot2grid - 方法3间隔较大，个人认为方法4更好
+fig = plt.figure()
+fig.set_figheight(6); fig.set_figwidth(6)
+ax1 = plt.subplot2grid((3, 6), (0, 0), colspan=2)
+ax2 = plt.subplot2grid((3, 6), (0, 2), colspan=2)
+ax3 = plt.subplot2grid((3, 6), (0, 4), colspan=2)
+ax4 = plt.subplot2grid((3, 6), (1, 0), colspan=2)
+ax5 = plt.subplot2grid((3, 6), (1, 2), colspan=2)
+ax6 = plt.subplot2grid((3, 6), (1, 4), colspan=2)
+ax7 = plt.subplot2grid((3, 6), (2, 0), colspan=3)
+ax8 = plt.subplot2grid((3, 6), (2, 3), colspan=3)
+</code></pre>
+<h2 id="画图字体设置">画图字体设置</h2>
+<ul>
+<li>SCI投稿推荐使用 Arial字体（一般都有）</li>
+<li>下载字体https://www.download-free-fonts.com 复制到matplotlib对应字体目录下<code>/r008/xdxie/software/anaconda3/lib/python3.8/site-packages/matplotlib/mpl-data/fonts/ttf</code>，删除home目录下的.cache/matplotlib文件夹，添加下面的语句，就可以了</li>
+</ul>
+<pre><code class="language-python">import matplotlib.font_manager as font_manager
+fontpath = &quot;/r008/xdxie/software/anaconda3/lib/python3.8/site-packages/matplotlib/mpl-data/fonts/ttf/times new roman.ttf&quot;
+prop = font_manager.FontProperties(fname=fontpath)
+plt.rcParams['font.family'] = prop.get_name()
+
+import matplotlib.pyplot as plt 
+plt.rcParams['font.sans-serif'] = ['SimHei']#用来显示中文标签
+plt.rcParams['axes.unicode_minus'] = False#用来正常显示负号
+
+# 单独设置text字体
+ax.text(116.0,40.25,  u'北京',fontfamily=prop.get_name())
+
+# windows下字体目录 C:/windows/fonts
+
+# 中英文混合
+plt.rcParams['font.family']='Times New Roman ,simhei '# 设置字体族，中文为SimSun，英文为Times New Roman
+plt.rcParams['mathtext.fontset'] = 'stix' # 设置数学公式字体为stix
+</code></pre>
+<ul>
+<li><strong>中文字体解决方案</strong></li>
+</ul>
+<p><strong>1. 查看matplotlib字体位置</strong></p>
+<pre><code>python
+import matplotlib 
+print(matplotlib.matplotlib_fname())
+
+#记录下来，字体位置我的是：/home/ruanjianlaowang/anaconda3/lib/python3.7/site-packages/matplotlib/mpl-data/matplotlibrc
+
+exit()
+</code></pre>
+<p><strong>2. 上传字体到服务器</strong></p>
+<pre><code>cd /home/ruanjianlaowang/anaconda3/lib/python3.7/site-packages/matplotlib/mpl-data/fonts/ttf
+
+通过ftp或者其他方式，将字体传上去，我们传的是：simhei.ttf
+</code></pre>
+<p><strong>3. 删除字体缓存</strong></p>
+<pre><code>cd  ~/.cache/matplotlib
+rm -rf *
+</code></pre>
+<p><strong>4. 重启python应用</strong></p>
+<pre><code>nohup python k-means.py &amp;
+</code></pre>
+<p><strong>说明：</strong> 假如还没生效，再更改个配置文件试试。（我们以前没更改这个配置文件，但是这次发生了个插曲，这次用的jmeter测试，一直还是乱码，后来改了这个还是不行，原来是jmeter的问题）</p>
+<pre><code>cd  /home/ruanjianlaowang/anaconda3/lib/python3.7/site-packages/matplotlib/mpl-data
+
+vi matplotlibrc 
+font.family         : sans-serif  #去掉前面的#
+font.serif          : simhei, DejaVu Serif,   #新加了simhei
+</code></pre>
+<h2 id="计算统计参数">计算统计参数</h2>
+<pre><code class="language-python">def evaluation(obs,sim):
+    '''
+    sim: prediction,  n-D np.array
+    obs: observation, n-D np.array
+    Assume the first dimension is time, deal with time dimension
+    NOTE: users should set cut off value for MNB and MNE:
+    As for O3 1h and 8h evaluation:
+    [ozone] &gt; 40 or 60 ppb is suggested by EPA, but 30 ppb is used in J.L. Hu (2016)
+    '''
+    N = obs.shape[0]
+    # mean observation
+    mo = np.nanmean(obs,axis=0)
+    # mean prediction
+    mp = np.nanmean(sim,axis=0)
+
+    error = sim - obs
+    # bias error (B) / mean bias (MB) / Bias
+    bias = np.nansum(error,axis=0)/N
+
+    # Gross Error (E/GE) / Mean Absolute Error (MAE) / Mean Error (ME)
+    ME = np.nansum(np.abs(error),axis=0)/N
+
+    # Mean Normalized Bias (MNB) | range(-100% to +++) | NOTE What happend if obs .eq. zero???
+    MNB = np.nansum(error/obs,axis=0)/N
+
+    # Mean Normalized Error (MNE) | range(0 to +++) | NOTE What happend if obs .eq. zero???
+    MNE = np.nansum(np.abs(error/obs),axis=0)/N 
+
+    # Mean Fractional Bias (MFB) | range(-200% to +200%) | NOTE What happend if (obs+sim) .eq. zero???
+    MFB = np.nansum(error/(sim+obs)*2.,axis=0)/N
+
+    # Mean Fractional Error (MFE) | range(0 to +200%) | NOTE What happend if (obs+sim) .eq. zero???
+    MFE = np.nansum(np.abs(error)/(sim+obs)*2.,axis=0)/N
+
+    # Normalized Mean Bias (NMB) | range(-100% to +++) 
+    NMB = np.nansum(error,axis=0)/np.nansum(obs,axis=0)
+
+    # Normalized Mean Error (NME) | range(0 to +++) |
+    NME = np.nansum(np.abs(error),axis=0)/np.nansum(obs,axis=0)
+
+    # Root Mean Square Error (RMSE)
+    RMSE = np.sqrt(np.nansum(np.square(error),axis=0)/N)
+
+    # correlation coefficient (R)
+    coef = ma.corrcoef(ma.masked_invalid(obs), ma.masked_invalid(sim)); R = coef[0,1]
+
+    # Index of Agreement (IoA)
+    IoA = 1 - np.nansum(np.square(error),axis=0)/np.nansum(np.square(np.abs(sim-mo)+np.abs(obs-mo)),axis=0)
+
+    return mo,mp,bias,ME,MNB,MNE,MFB,MFE,NMB,NME,RMSE,R,IoA
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/LCt4Cp1KS/" class="tag">
+                    visualization
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/黑碳形貌理论基础/">
+                  <h3 class="post-title">
+                    黑碳形貌相关的理论基础
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

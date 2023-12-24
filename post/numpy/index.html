@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>numpy | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+读取文件
+常用的list
+pandas按照根据指定列值插值
+获取数据落在bins区间的索引 - 用于按照污染物等级统计分析
+合并数组
+
+数据框添加数据
+拼接两段数据
+
+
+日期
+常见
+查找
+list 转 data frame
+等差数列
+ma..." />
+    <meta name="keywords" content="data,analysis" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">numpy</h2>
+            <div class="post-date">2022-10-23</div>
+            
+            <div class="post-content" v-pre>
+              <p><ul class="markdownIt-TOC">
+<li><a href="#%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6">读取文件</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E7%9A%84list">常用的list</a></li>
+<li><a href="#pandas%E6%8C%89%E7%85%A7%E6%A0%B9%E6%8D%AE%E6%8C%87%E5%AE%9A%E5%88%97%E5%80%BC%E6%8F%92%E5%80%BC">pandas按照根据指定列值插值</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E8%90%BD%E5%9C%A8bins%E5%8C%BA%E9%97%B4%E7%9A%84%E7%B4%A2%E5%BC%95-%E7%94%A8%E4%BA%8E%E6%8C%89%E7%85%A7%E6%B1%A1%E6%9F%93%E7%89%A9%E7%AD%89%E7%BA%A7%E7%BB%9F%E8%AE%A1%E5%88%86%E6%9E%90">获取数据落在bins区间的索引 - 用于按照污染物等级统计分析</a></li>
+<li><a href="#%E5%90%88%E5%B9%B6%E6%95%B0%E7%BB%84">合并数组</a>
+<ul>
+<li><a href="#%E6%95%B0%E6%8D%AE%E6%A1%86%E6%B7%BB%E5%8A%A0%E6%95%B0%E6%8D%AE">数据框添加数据</a></li>
+<li><a href="#%E6%8B%BC%E6%8E%A5%E4%B8%A4%E6%AE%B5%E6%95%B0%E6%8D%AE">拼接两段数据</a></li>
+</ul>
+</li>
+<li><a href="#%E6%97%A5%E6%9C%9F">日期</a></li>
+<li><a href="#%E5%B8%B8%E8%A7%81">常见</a></li>
+<li><a href="#%E6%9F%A5%E6%89%BE">查找</a></li>
+<li><a href="#list-%E8%BD%AC-data-frame">list 转 data frame</a></li>
+<li><a href="#%E7%AD%89%E5%B7%AE%E6%95%B0%E5%88%97">等差数列</a></li>
+<li><a href="#mask">mask</a></li>
+<li><a href="#%E5%AF%B9%E5%BA%94%E5%85%83%E7%B4%A0%E8%BF%90%E7%AE%97">对应元素运算</a></li>
+<li><a href="#%E7%94%BB%E5%9B%BE%E5%B9%B3%E6%BB%91">画图平滑</a></li>
+</ul>
+</p>
+<h1 id="读取文件">读取文件</h1>
+<pre><code class="language-python"># 经过pandas 读取后, 再写出,部分数据小数位数超长
+# 在read_csv时, 加入参数float_precision=“round_trip”, 所有数据会当做string读取, 使用时再进行相应的转换为float
+df = pd.read_csv('%s/%s_%s_%s.csv' %(outputdir, region, var, YYYYMM),float_precision=&quot;round_trip&quot;)
+
+# 读取csv
+pd.read_csv(&quot;filename&quot;,sep=',',header=None,index=False)  # sep 分隔符, index 指定index列名
+obs  = pd.read_csv(&quot;d04_chem.txt&quot;,delim_whitespace = True) # 空格分割
+# csv编码问题： VS code先用正确编码打开（GB…?），然后保存为正常编码（能正确显示GB…），然后重新保存为UTF-8格式，读取正常。
+
+# excel
+</code></pre>
+<h1 id="常用的list">常用的list</h1>
+<ul>
+<li>
+<p>月份</p>
+<pre><code class="language-python">months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+</code></pre>
+</li>
+</ul>
+<p>month  = ['01','02','03','04','05','06','07','08','09','10','11','12']</p>
+<p>seasondict = { 'Spring':[3,4,5],<br>
+'Summer':[6,7,8],<br>
+'Autumn':[9,10,11],<br>
+'Winter':[1,2,12]}</p>
+<pre><code>- 区域范围定义
+
+```python
+llcrnrlon,urcrnrlon,llcrnrlat, urcrnrlat = 113.,119., 34., 41.  # NCP
+llcrnrlon,urcrnrlon,llcrnrlat, urcrnrlat = 119.,122., 30., 33.  # YRD
+llcrnrlon,urcrnrlon,llcrnrlat, urcrnrlat = 112.,115.5,21.5,24.  # PRD
+llcrnrlon,urcrnrlon,llcrnrlat, urcrnrlat = 103.,107., 28.5,31.5 # SCB
+
+# ref. Li et al., PNAS, 2017
+cornersdict = { 'BTH':[114.,118., 37., 41.],
+                'YRD':[118.,122., 30., 33.],
+                'PRD':[112.,115.5,21.5,24.],
+                'SCB':[103.5,107., 28.5,31.5]}
+
+cornersdict = { 'CEC': [112., 122., 30., 41.], # from Shah et al., 2020, ACP, central-eastern China
+                'NCP': [113.75, 118.75, 35., 41.], # from Zhai et al., 2021, NG
+                'YRD': [118., 122., 30., 33.],
+                'PRD': [112., 115.5, 21.5, 24.],
+                'SCB': [103.5, 107., 28.5, 31.5]}
+</code></pre>
+<ul>
+<li>排序</li>
+</ul>
+<pre><code class="language-python">change['Region'] = change.index
+list_custom = ['337城市',&quot;京津冀及周边&quot;,&quot;汾渭平原&quot;, '长三角', &quot;成渝地区&quot;,&quot;珠三角&quot;]
+change['Region'] = change['Region'].astype('category')
+change['Region'].cat.reorder_categories(list_custom, inplace=True)
+change.sort_values('Region', inplace=True)
+</code></pre>
+<ul>
+<li>
+<p>配色</p>
+<pre><code class="language-python">cnames = {'EC': '$BC$',
+'OM': '$OM$',
+'SO4':'$SO_4^{2-}$',
+'NO3':'$NO_3^{-}$',
+'NH4':'$NH_4^{+}$',
+'Cl': '$Cl$',
+'Other':'$MI$'}
+</code></pre>
+</li>
+</ul>
+<p>cdict = {'EC': '#231916',<br>
+'OM': '#009e42',<br>
+'SO4':'#e51620',<br>
+'NO3':'#212d8c',<br>
+'NH4':'#ef9817',<br>
+'Cl': '#d84d95',<br>
+'Other':'#cbced2'}</p>
+<pre><code># 指定顺序排序
+
+``` python
+list_custom = ['337城市',&quot;京津冀及周边&quot;,&quot;汾渭平原&quot;, '长三角', &quot;成渝地区&quot;,&quot;珠三角&quot;]
+regiondata['Region'] = regiondata['Region'].astype('category')
+regiondata['Region'].cat.reorder_categories(list_custom, inplace=True)
+regiondata.sort_values('Region', inplace=True)
+</code></pre>
+<h1 id="pandas按照根据指定列值插值">pandas按照根据指定列值插值</h1>
+<pre><code class="language-python"># 根据PM2.5的时间序列对其他组分进行插值
+data = pd.read_csv(&quot;ObservationData/OBS.csv&quot;,index_col='PM25')
+data.interpolate(method='index').to_csv(&quot;ObservationData/Obs_taizhou.csv&quot;)
+</code></pre>
+<h1 id="获取数据落在bins区间的索引-用于按照污染物等级统计分析">获取数据落在bins区间的索引 - 用于按照污染物等级统计分析</h1>
+<pre><code class="language-python">levels = [0, 100, 160, 200, 1000]
+O3 = data[&quot;O3&quot;]
+inds = np.digitize(O3,bins = levels)
+
+for i in range(1,5):
+    print(i, O3[inds==i].mean())
+</code></pre>
+<h1 id="合并数组">合并数组</h1>
+<pre><code class="language-python">np.column_stack((a,b))  #作为列合并
+np.row_stack((a,b))  # 作为行
+</code></pre>
+<h2 id="数据框添加数据">数据框添加数据</h2>
+<pre><code class="language-python">df = pd.concat([df,pd.DataFrame.from_records([{ 
+    &quot;a&quot;:amax,
+    &quot;b&quot;:bmax,
+    &quot;sdate&quot;:df.index[i],
+    &quot;edate&quot;:df.index[i+tmax-1],
+    'CO' :df[&quot;CO&quot;].iloc[i:i+tmax].mean(),
+    'NO2':df[&quot;NO2&quot;].iloc[i:i+tmax].mean(),
+    'O3' :df[&quot;O3&quot;].iloc[i:i+tmax].mean(),
+    &quot;PM2.5&quot;:df[&quot;PM2.5&quot;].iloc[i:i+tmax].mean(),
+    'SO2':df[&quot;SO2&quot;].iloc[i:i+tmax].mean()
+}])])
+</code></pre>
+<h2 id="拼接两段数据">拼接两段数据</h2>
+<pre><code class="language-python">data2 = f.loc['2017-06-01':'2017-08-30']
+data3 = f.loc['2017-09-01':'2017-11-30']
+data1 = f.loc['2017-03-01':'2017-05-31']
+data4 = f.loc['2017-01-01':'2017-02-28']
+data5 = f.loc['2017-12-01':'2017-12-31']
+data0 = pd.concat([data4,data5])
+
+pd.concat([read_json(i) for i in adcodes],ignore_index=True)
+
+&gt;&gt;&gt; a=np.array([[1,2,3],[4,5,6]])
+&gt;&gt;&gt; b=np.array([[11,21,31],[7,8,9]])
+&gt;&gt;&gt; np.concatenate((a,b),axis=0)
+array([[ 1,  2,  3],
+       [ 4,  5,  6],
+       [11, 21, 31],
+       [ 7,  8,  9]])
+&gt;&gt;&gt; np.concatenate((a,b),axis=1)  #axis=1表示对应行的数组进行拼接
+array([[ 1,  2,  3, 11, 21, 31],
+       [ 4,  5,  6,  7,  8,  9]])
+
+ax.plot(pm25[0:59],data[0:59,10],'.',c='k',alpha=0.5,label='Winter')
+ax.plot(pm25[334:365],data[334:365,10],'.',c='k',alpha=0.5)
+ax.plot(pm25[59:151],data[59:151,10],'.',c='b',alpha=0.5,label='Spring')
+ax.plot(pm25[151:243],data[151:243,10],'.',c='g',alpha=0.5,label='Summer')
+ax.plot(pm25[243:334],data[243:334,10],'.',c='r',alpha=0.5,label='Autumn')
+
+winter = np.concatenate((arrs[0:59],arrs[334:365]),axis=0)
+spring = arrs[59:151]
+summer = arrs[151:243]
+autumn = arrs[243:334]
+</code></pre>
+<h1 id="日期">日期</h1>
+<pre><code class="language-python">df = pd.read_csv(fname,index_col=&quot;datetime&quot;)
+df.index = pd.to_datetime(df.index,format=&quot;%Y-%m-%d&quot;)
+
+df.index.month # 获取月份
+df.index.year # 获取年份
+
+df.loc['2000-6-1':'2000-6-10'] # 切片
+
+df[df.index.month.isin([5, 6, 7, 8, 9, 10])] # 按月份切片
+
+# 时区转换
+df.index = pd.to_datetime(df.time,format=&quot;%Y-%m-%dT%H:%M:%S&quot;, utc=True)
+df.index.tz_convert('Asia/Shanghai')
+</code></pre>
+<ul>
+<li>某个月的开始和结束日期</li>
+</ul>
+<pre><code class="language-python">from dateutil.relativedelta import relativedelta
+start = datetime.datetime.strptime(&quot;2017-%s-01&quot; %mon,&quot;%Y-%m-%d&quot;)
+end = start + relativedelta(months=+1) + datetime.timedelta(days=-1)
+</code></pre>
+<ul>
+<li>时区转换</li>
+</ul>
+<pre><code class="language-python">data.index = pd.to_datetime(data.index,format='%Y%j%H').tz_localize('UTC').tz_convert(&quot;Asia/Shanghai&quot;)
+</code></pre>
+<ul>
+<li>设置时间格式</li>
+</ul>
+<pre><code class="language-python">res.index = res.index.strftime('%Y-%m-%d')
+</code></pre>
+<h1 id="常见">常见</h1>
+<pre><code class="language-python"># 三维计算相关系数
+def pearsonr_2D(x, y):
+    &quot;&quot;&quot;computes pearson correlation coefficient
+       where x is a 1D and y a 2D array&quot;&quot;&quot;
+    upper = np.sum((x - np.mean(x,axis=0)) * (y - np.mean(y, axis=0)), axis=0)
+    lower = np.sqrt(np.sum(np.power(x - np.mean(x,axis=0), 2),axis=0) * np.sum(np.power(y - np.mean(y, axis=0), 2), axis=0))
+    rho = upper / lower
+    return rho
+A = np.array([[[1,3,4],[4,6,5]],[[5,7,8],[1,2,23]],[[3,9,4],[5,7,5]]])
+B = np.array([[[7,1,3],[14,4,2]],[[15,6,1],[6,7,91]],[[3,9,4],[5,7,5]]])
+c = pearsonr_2D(A,B)
+
+for i,region in enumerate(region):
+    print(i,region)
+# 创建dataframe追加行数据
+df = pd.DataFrame(columns = [&quot;ebayno&quot;, &quot;p_sku&quot;, &quot;sale&quot;, &quot;sku&quot;]) #创建一个空的dataframe 
+df = df.append(dframe1.loc[dframe1.p_sku == ps], ignore_index=True)  #忽略索引,往dataframe中插入一行数据 
+
+df = df.append([{'site':site,'MB':mb,'NMB':nmb,'NME':nme,'r2':r2}],ignore_index=True)
+来自 &lt;http://blog.csdn.net/zn505119020/article/details/77324029&gt; 
+
+合并
+df = pd.concat([inputdf,classdf],axis=1)
+
+根据分组统计，对不同行操作
+gp_col = 'SITE'
+df_max = obs.groupby(gp_col)[species].max()
+df_min = obs.groupby(gp_col)[species2].min()
+
+插入列 insert（位置，列名，数据）
+df_max.insert(0,&quot;站点&quot;,sitename)
+
+DataFrame 切片操作，loc, iloc
+print df.loc[1:3, ['total_bill', 'tip']]
+print df.loc[1:3, 'tip': 'total_bill'] 
+print df.iloc[1:3, [1, 2]] 
+print df.iloc[1:3, 1: 3]
+
+来自 &lt;https://blog.csdn.net/ly_ysys629/article/details/55224284&gt; 
+
+
+
+
+获取数据框列名
+print(df.columns)   
+获取数据框列
+df[&quot;column-name&quot;]
+选取行
+df[df[&quot;column-name&quot;]==&quot;spec-name&quot;]
+选取数据
+df.column[index]
+df.ix[0,1]
+
+列表转换成dataframe
+df = pd.DataFrame([w1_p,w2_p,w3_p,w4_p],index=['w1_pre','w2_pre','w3_pre','w4_pre'])
+修改dataframe的列名
+df.columns=['site','time','aqi','so2','no2','pm10','co','o3','pm2_5']
+</code></pre>
+<h1 id="查找">查找</h1>
+<pre><code class="language-python">cname = allsite.query(&quot;Area == @city&quot;).iloc[0,4]
+cname = allsite.query(&quot;Area == '北京'&quot;).iloc[0,0]
+</code></pre>
+<h1 id="list-转-data-frame">list 转 data frame</h1>
+<pre><code class="language-python">keys = [&quot;price&quot;,&quot;toalAmount&quot;]
+values = [&quot;0.01&quot;,&quot;10000&quot;] 
+d = dict(zip(keys,values))
+
+pd.DataFrame([dict(zip(columns,temp))],columns=columns,index=None)
+</code></pre>
+<h1 id="等差数列">等差数列</h1>
+<pre><code class="language-python">cticks = np.linspace(zmin, zmax, num=11, dtype=int)
+</code></pre>
+<h1 id="mask">mask</h1>
+<pre><code class="language-python">def regionmean(lat,lon,data,corners):
+    llcrnrlon,urcrnrlon,llcrnrlat, urcrnrlat = corners
+    mask = np.where((lat&lt;urcrnrlat)&amp;(lat&gt;llcrnrlat)&amp;(lon&lt;urcrnrlon)&amp;(lon&gt;llcrnrlon),1,0)
+    if(len(data.shape)==3):
+        mask3d = np.broadcast_arrays(mask[np.newaxis,:,:],data)[0]
+        datamask = np.ma.masked_where(mask3d!=1, data)
+        return np.nanmean(np.nanmean(datamask,axis=1),axis=1)
+    else:
+        datamask = np.ma.masked_where(mask!=1, data)
+        return np.nanmean(datamask.flatten())
+</code></pre>
+<h1 id="对应元素运算">对应元素运算</h1>
+<pre><code class="language-python">a = np.array([[1, 2]])
+b = np.array([[2, 4]])
+r1 = a + b  # [[3 6]]
+r2 = a - b  # [[-1 -2]]
+r3 = a * b  # [[2 8]]
+r4 = a / b  # [[0.5 0.5]]
+</code></pre>
+<h1 id="画图平滑">画图平滑</h1>
+<pre><code class="language-python">x = np.linspace(0,31,31);  print(x)
+y = np.sum(data,axis=1)
+x_new = np.linspace(0,31,100)
+tck = interpolate.splrep(x,y)
+y_bspline = interpolate.splev(x_new,tck)
+ax2.plot(x,y,&quot;wo&quot;,ms=3)
+ax2.plot(x_new,y_bspline,'w-',linewidth=0.5)
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/z-7AN29mXH/" class="tag">
+                    data
+                  </a>
+                
+                  <a href="https://xiaodongnuist.github.io/tag/Yk4ukDetMn/" class="tag">
+                    analysis
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/hexoguide/">
+                  <h3 class="post-title">
+                    hexoguide
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>折线图 | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="fig, ax = plt.subplots(figsize=(3,2))
+
+args = {&quot;ms&quot;:2,&quot;lw&quot;:1.}
+x = np.linspace(0,30,31)
+ax.plot(x,s2..." />
+    <meta name="keywords" content="visualization" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">折线图</h2>
+            <div class="post-date">2022-10-25</div>
+            
+              <div class="feature-container" style="background-image: url('https://xiaodongnuist.github.io/post-images/折线图.png')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <pre><code class="language-python">fig, ax = plt.subplots(figsize=(3,2))
+
+args = {&quot;ms&quot;:2,&quot;lw&quot;:1.}
+x = np.linspace(0,30,31)
+ax.plot(x,s2data13,'b^--',**args)
+ax.plot(x,s2data17,'r^--',**args)
+
+ax.plot(x,s2data1713,'g^--',**args)
+
+ax.plot(data13,'b.-',**args)
+ax.plot(data17,'r.-',**args)
+ax.plot([],'k.-',label='OBS',**args)
+ax.plot([],'k^--',label='SIM',**args)
+
+mo,mp,bias,ME,MNB,MNE,MFB,MFE,NMB,NME,RMSE,R,IoA = evaluation(data13, s2data13)
+ax.text(0.99, 0.84, r&quot;$R=%4.2f,\ NMB=%4.1f\%%,\ NME=%4.1f\%%$&quot; % (R,NMB*100,NME*100), color='b',  transform=ax.transAxes,ha='right',fontsize=6.)
+mo,mp,bias,ME,MNB,MNE,MFB,MFE,NMB,NME,RMSE,R,IoA = evaluation(data17, s2data17)
+ax.text(.99, 0.91, r&quot;$R=%4.2f,\ NMB=%4.1f\%%,\ NME=%4.1f\%%$&quot; % (R,NMB*100,NME*100), color='r',  transform=ax.transAxes,ha='right',fontsize=6.)
+ax.text(.3, 0.84,'2013', color='b',  transform=ax.transAxes,ha='right',fontsize=6.)
+ax.text(.3, 0.91,'2017', color='r',  transform=ax.transAxes,ha='right',fontsize=6.)
+
+
+# ax.axhline(y=100,color='r',lw=0.5,ls='--',alpha=0.5)
+# ax.axhline(y=180,color='b',lw=0.5,ls='--',alpha=0.5)
+ax.axhline(y=150,color='k',lw=0.5,ls='--',alpha=0.5)
+ax.set_ylim(0,340)
+ax.yaxis.set_major_locator(MultipleLocator(50.))
+ax.yaxis.set_minor_locator(MultipleLocator(10.))
+
+ax.set_xticks(np.linspace(0,30,6))
+ax.set_xticks(np.linspace(0,30,31),minor=True)
+ax.set_xticklabels([&quot;01-01&quot;,&quot;01-07&quot;,&quot;01-13&quot;,&quot;01-19&quot;,&quot;01-25&quot;,&quot;01-31&quot;,])
+ax.legend(loc=2, frameon=False,ncol=1, handletextpad=0.3, labelspacing =0.3, handlelength=1.,fontsize=6)
+
+figname = f&quot;{homepath}/figures/CEC_regionmean.png&quot;
+plt.savefig(figname, dpi=300, bbox_inches='tight',pad_inches = 0.05, facecolor='w') 
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://xiaodongnuist.github.io/post-images/1703231335397.png" alt="" loading="lazy"></figure>
+<pre><code class="language-python">config = {
+    'xtick.major.size':  0,
+    'xtick.minor.size':  2,
+    'ytick.major.size':  2,
+    'ytick.minor.size':  1,
+}
+plt.rcParams.update(config)
+
+seasondict = { 'Spring':(25,75),
+               'Summer':(25,95),
+               'Autumn':(18,68),
+               'Winter':(8,45)}
+xx = np.array([1,2,3,4,5,6,7,8,9])
+
+for season,ylims in seasondict.items():
+    dfs = pd.read_csv(f&quot;../obsdata/MDA8trends_{season}.csv&quot;)    
+    arr2d10 = dfs[['2013','2014','2015','2016','2017','2018','2019','2020','2021']].values
+    arr2d11 = dfs.query(&quot;region == 'NCP'&quot;)[['2013','2014','2015','2016','2017','2018','2019','2020','2021']].values
+    arr2d12 = dfs.query(&quot;region == 'FWP'&quot;)[['2013','2014','2015','2016','2017','2018','2019','2020','2021']].values
+    arr2d13 = dfs.query(&quot;region == 'YRD'&quot;)[['2013','2014','2015','2016','2017','2018','2019','2020','2021']].values
+
+    dfs = pd.read_csv(f&quot;../obsdata/pm25trends_{season}.csv&quot;)    
+    arr2d20  = dfs[['2013','2014','2015','2016','2017','2018','2019','2020','2021']].values
+    arr2d21 = dfs.query(&quot;region == 'NCP'&quot;)[['2013','2014','2015','2016','2017','2018','2019','2020','2021']].values
+    arr2d22 = dfs.query(&quot;region == 'FWP'&quot;)[['2013','2014','2015','2016','2017','2018','2019','2020','2021']].values
+    arr2d23 = dfs.query(&quot;region == 'YRD'&quot;)[['2013','2014','2015','2016','2017','2018','2019','2020','2021']].values
+
+    fig, ax = plt.subplots(figsize=(3.5,2.5))
+
+    ax.plot(xx,    np.nanmean(arr2d11,axis=0),'o-',ms=3,color='C0',lw=1.,zorder=2)
+    ax.plot(xx,np.nanmean(arr2d13,axis=0),'o-',ms=3,color='C2',lw=1.,zorder=2)
+
+    axw = ax.twinx()
+    axw.plot(xx,    np.nanmean(arr2d21,axis=0),'s:',ms=3,color='C0',lw=1.,zorder=2)
+    axw.plot(xx,np.nanmean(arr2d23,axis=0),'s:',ms=3,color='C2',lw=1.,zorder=2)
+
+    ax.plot([],'ko-',ms=3,label=&quot;MDA8&quot;)
+    ax.plot([],'ks:',ms=3,label=&quot;$PM_{2.5}$&quot;)
+    ax.plot([],'.',color='C0',label=&quot;BTH&quot;)
+    ax.plot([],'.',color='C2',label='YRD')
+
+    for i in range(8):
+        ax.axvline(x=1.5+i,ls='--',lw=0.1,c='k')
+    leg = ax.legend(frameon=False,ncol=2,loc=1, handletextpad =0.3,   # handle和文字距离
+        columnspacing=0.5, labelspacing=0.1,  handlelength=2., )
+    for h, t in zip(leg.legendHandles, leg.get_texts()):
+        t.set_color(h.get_color())
+
+    ax.set_xlim(0.5,9.5)
+    ax.set_ylim(ylims)
+    ax.set_xticks(xx)
+    ax.set_xticklabels(years,rotation=0.)
+    ax.set_xticks(xx+0.5,minor=True)
+    ax.set_ylabel(f&quot;{season} MDA8 ozone (ppb)&quot;)
+    axw.set_ylabel(f&quot;{season} &quot; +  &quot;$PM_{2.5}\ (\mu g\ m^{-3})$&quot;)
+    plt.savefig(f'../figures/pm25MDA8_trends_{season}',bbox_inches='tight',pad_inches = 0.05, dpi=300, facecolor='w')
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/LCt4Cp1KS/" class="tag">
+                    visualization
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/提取污染观测数据/">
+                  <h3 class="post-title">
+                    提取污染观测数据
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

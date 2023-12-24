@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>WRF/Chem | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+安装
+WRF-Chem 文档说明
+运行
+
+排放处理
+
+
+MOSAIC气溶胶模块
+气溶胶光学性质的计算
+
+总体思路（以MOSAIC方案为例）
+程序中细节说明
+
+
+
+
+安装
+
+问题1：configure之后需要修改下configure.wrf..." />
+    <meta name="keywords" content="WRF-Chem" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">WRF/Chem</h2>
+            <div class="post-date">2022-10-25</div>
+            
+            <div class="post-content" v-pre>
+              <p><ul class="markdownIt-TOC">
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
+<li><a href="#wrf-chem-%E6%96%87%E6%A1%A3%E8%AF%B4%E6%98%8E">WRF-Chem 文档说明</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C">运行</a>
+<ul>
+<li><a href="#%E6%8E%92%E6%94%BE%E5%A4%84%E7%90%86">排放处理</a></li>
+</ul>
+</li>
+<li><a href="#mosaic%E6%B0%94%E6%BA%B6%E8%83%B6%E6%A8%A1%E5%9D%97">MOSAIC气溶胶模块</a></li>
+<li><a href="#%E6%B0%94%E6%BA%B6%E8%83%B6%E5%85%89%E5%AD%A6%E6%80%A7%E8%B4%A8%E7%9A%84%E8%AE%A1%E7%AE%97">气溶胶光学性质的计算</a>
+<ul>
+<li><a href="#%E6%80%BB%E4%BD%93%E6%80%9D%E8%B7%AF%E4%BB%A5mosaic%E6%96%B9%E6%A1%88%E4%B8%BA%E4%BE%8B">总体思路（以MOSAIC方案为例）</a></li>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%BB%86%E8%8A%82%E8%AF%B4%E6%98%8E">程序中细节说明</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h1 id="安装">安装</h1>
+<ul>
+<li>问题1：configure之后需要修改下configure.wrf文件，mpif90改成mpiifort</li>
+<li>人为排放处理需要matlab，必须在admin上运行</li>
+</ul>
+<h1 id="wrf-chem-文档说明">WRF-Chem 文档说明</h1>
+<ul>
+<li>Grell 2005 Fully coupled ‘‘online’’ chemistry within the WRF model; AE</li>
+</ul>
+<h1 id="运行">运行</h1>
+<h2 id="排放处理">排放处理</h2>
+<ul>
+<li>
+<p>关于wildfire排放</p>
+<ul>
+<li>在<code>Registry/registry.chem</code>中，有物种定义<pre><code class="language-fortran">package   biomassb      biomass_burn_opt==1             -          state:mean_fct_agtf,mean_fct_agef,mean_fct_agsv,mean_fct_aggr,firesize_agtf,firesize_agef,firesize_agsv,firesize_aggr;ebu:ebu_no,ebu_no2,ebu_co,ebu_co2,ebu_eth,ebu_hc3,ebu_hc5,ebu_hc8,ebu_ete,ebu_olt,ebu_oli,ebu_pm25,ebu_pm10,ebu_dien,ebu_iso,ebu_api,ebu_lim,ebu_tol,ebu_csl,ebu_hcho,ebu_ald,ebu_ket,ebu_macr,ebu_ora1,ebu_ora2,ebu_so2,ebu_nh3,ebu_oc,ebu_bc,ebu_sulf,ebu_dms;ebu_in:ebu_in_no,ebu_in_no2,ebu_in_co,ebu_in_co2,ebu_in_eth,ebu_in_hc3,ebu_in_hc5,ebu_in_hc8,ebu_in_ete,ebu_in_olt,ebu_in_oli,ebu_in_pm25,ebu_in_pm10,ebu_in_dien,ebu_in_iso,ebu_in_api,ebu_in_lim,ebu_in_tol,ebu_in_csl,ebu_in_hcho,ebu_in_ald,ebu_in_xyl,ebu_in_ket,ebu_in_macr,ebu_in_ora1,ebu_in_ora2,ebu_in_so2,ebu_in_nh3,ebu_in_oc,ebu_in_bc,ebu_in_sulf,ebu_in_dms,ebu_in_ash
+</code></pre>
+</li>
+<li><code>ebu</code>表示最终模式需要的物种；<code>ebu_in</code> 表示排放文件中的物种（<code>wrffirechemi_d01</code>文件中，物种名称为<code>ebu_in_no</code>）</li>
+</ul>
+</li>
+<li>
+<p>数据处理流程</p>
+<ol>
+<li>数据读取程序为<code>share/mediation_integrate.F</code>, 数据读到<code>ebu_in</code>数组中（此为推测），如下：</li>
+</ol>
+<ul>
+<li>
+<pre><code class="language-fortran">    CALL med_auxinput_in ( grid, ialarm, config_flags )
+    WRITE ( message , FMT='(A,i3,A,i3)') 'Input data processed for aux input ',&amp;
+        ialarm - first_auxinput + 1, ' for domain ',grid%id
+</code></pre>
+</li>
+</ul>
+<ol start="2">
+<li>
+<p>在<code>chem/emissions_driver.F</code>程序中调用 <code>do_plumerisefire</code>将<code>ebu_in</code>赋值给<code>ebu</code>,</p>
+<ul>
+<li>
+<p>涉及子程序<code>chem/module_plumerise1.f90</code></p>
+</li>
+<li>
+<p><code>do_plumerisefire</code>是根据<code>namelist.input</code>中的<code>plumerisefire_frq</code>来设置的，每隔一段时间运行一次</p>
+</li>
+</ul>
+<pre><code class="language-fortran">        if( do_plumerisefire )then
+           CALL wrf_debug(15,'fire emissions: calling biomassb')
+           write(0,*)ktau,stepfirepl
+           call plumerise_driver (id,ktau,dtstep,                           &amp;
+            ebu,ebu_in,                                                     &amp;
+            mean_fct_agtf,mean_fct_agef,mean_fct_agsv,mean_fct_aggr,        &amp;
+            firesize_agtf,firesize_agef,firesize_agsv,firesize_aggr,        &amp;
+            config_flags, t_phy,moist,                                      &amp;
+            rho_phy,vvel,u_phy,v_phy,p_phy,                                 &amp;
+            emis_ant,z_at_w,z,config_flags%scale_fire_emiss,                &amp;
+            ids,ide, jds,jde, kds,kde,                                      &amp;
+            ims,ime, jms,jme, kms,kme,                                      &amp;
+            its,ite, jts,jte, kts,kte                                       )
+         endif
+</code></pre>
+</li>
+<li>
+<p>在<code>chem/emissions_driver.F</code>程序中调用 <code>add_emis_burn</code>：</p>
+<ul>
+<li>
+<pre><code class="language-fortran">     CASE (BIOMASSB,BIOMASSB_MOZC,BIOMASSB_MOZ,BIOMASSB_GHG)
+       CALL wrf_debug(15,'fire emissions: adding biomassb emissions')
+       call add_emis_burn(id,dtstep,ktau,dz8w,rho_phy,chem,&amp;
+            julday,gmt,xlat,xlong,t_phy,p_phy,                           &amp;
+            ebu,config_flags%chem_opt,0,config_flags%biomass_burn_opt,     &amp;
+            num_chem,ids,ide, jds,jde, kds,kde,                                   &amp;
+            ims,ime, jms,jme, kms,kme,                                   &amp;
+            its,ite, jts,jte, kts,kte                                    )
+</code></pre>
+</li>
+<li>
+<p>注意：<code>chem/module_add_emiss_burn.F</code>中将排放中的物种分配给不同的化学机制</p>
+</li>
+<li>
+<pre><code class="language-fortran">      emiss_select:  SELECT CASE(chem_opt)
+      CASE (RADM2,RACM_KPP,RACM_MIM_KPP,SAPRC99_KPP,SAPRC99_MOSAIC_4BIN_VBS2_KPP, &amp;
+           SAPRC99_MOSAIC_8BIN_VBS2_AQ_KPP, SAPRC99_MOSAIC_8BIN_VBS2_KPP)
+          do j=jts,jte
+          do i=its,ite
+           do k=kts,kte
+        conv_rho=r_q*4.828e-4/rho_phy(i,k,j)*dtstep/60./dz8w(i,k,j)
+        chem(i,k,j,p_csl)  =  chem(i,k,j,p_csl)                        &amp;
+                         +ebu(i,k,j,p_ebu_csl)*conv_rho
+        chem(i,k,j,p_iso)  = chem(i,k,j,p_iso)                         &amp;
+                         +ebu(i,k,j,p_ebu_iso)*conv_rho
+        chem(i,k,j,p_no)   = chem(i,k,j,p_no)                          &amp;
+                         +ebu(i,k,j,p_ebu_no)*conv_rho
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>注意，在<code>emissions_driver.F</code>中，由于不同化学机制的物种不一样，需要对读入的排放数据进行匹配（mapping），</p>
+</li>
+<li>
+<p>存在问题，<code>saprc99</code>机制中并没有正确读入野火排放数据，<code>VOC</code>的mapping是和其他机制一样，比如<code>chem/module_add_emiss_burn.F</code>文件中，<code>saprc99</code>机制中并没有<code>HC3</code>物种，只有<code>ALK</code>，所以<code>p_hc3=1</code>,读入的<code>ebu(p_ebu_hc3)</code>排放赋值给了一个不存在的物种！！！</p>
+</li>
+<li>
+<p>需要修改，参考<code>Simulating Air Pollution in the Severe Fires Event during 2015 El-Niño in Indonesia using WRF-Chem</code></p>
+</li>
+</ol>
+</li>
+</ul>
+<h1 id="mosaic气溶胶模块">MOSAIC气溶胶模块</h1>
+<ul>
+<li>
+<p>mosaic bin粒径范围设置, 在<code>module_mosaic_driver.F</code>程序中</p>
+<ul>
+<li>
+<pre><code class="language-fortran">!
+!   set section size arrays
+!
+        do itype = 1, ntype_aer
+      nhi = nsize_aer(itype)
+      dlo_sect(1,itype) = 3.90625e-6
+      dhi_sect(nhi,itype) = 10.0e-4
+
+      dum = log( dhi_sect(nhi,itype)/dlo_sect(1,itype) ) / nhi !replaced alog by log by Manish Shrivastava on 11/28/2011. alog denoted natural log in fortran 77. log(x) is natural log in fortran 90
+      do n = 2, nhi
+    dlo_sect(n,itype) = dlo_sect(1,itype) * exp( (n-1)*dum )
+    dhi_sect(n-1,itype) = dlo_sect(n,itype)
+      end do
+      do n = 1, nhi
+    dcen_sect(n,itype) = sqrt( dlo_sect(n,itype)*dhi_sect(n,itype) )
+    volumlo_sect(n,itype) = (pi/6.) * (dlo_sect(n,itype)**3)
+    volumhi_sect(n,itype) = (pi/6.) * (dhi_sect(n,itype)**3)
+    volumcen_sect(n,itype) = (pi/6.) * (dcen_sect(n,itype)**3)
+    sigmag_aer(n,itype) = (dhi_sect(n,itype)/dlo_sect(n,itype))**0.289
+      end do
+  end do
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>简化测试8bin的结果如下：</p>
+<pre><code class="language-fortran">       program main 
+       real dlo_sect(8)
+       real dhi_sect(8)
+       integer nhi
+       nhi = 8
+       dlo_sect(1) = 3.90625e-6
+       dhi_sect(nhi) = 10.0e-4
+       dum = log( dhi_sect(nhi)/dlo_sect(1) ) / nhi 
+       do n = 2, nhi
+         dlo_sect(n) = dlo_sect(1) * exp( (n-1)*dum )
+         dhi_sect(n-1) = dlo_sect(n)
+       end do
+       print*,dlo_sect
+       print*,dhi_sect
+       end
+ ! 输出为
+ 3.9062502E-06  7.8125004E-06  1.5625001E-05  3.1250001E-05  6.2500003E-05  1.2500001E-04  2.5000001E-04  5.0000002E-04
+ 7.8125004E-06  1.5625001E-05  3.1250001E-05  6.2500003E-05  1.2500001E-04  2.5000001E-04  5.0000002E-04  1.0000000E-03
+</code></pre>
+<p>! 4 bins</p>
+<pre><code class="language-fortran">   3.9062502E-06  1.5625001E-05  6.2500003E-05  2.5000001E-04
+   1.5625001E-05  6.2500003E-05  2.5000001E-04  1.0000000E-03
+   ```
+
+</code></pre>
+</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://xiaodongnuist.github.io/post-images/1703230496969.png" alt="" loading="lazy"></figure>
+<ul>
+<li>
+<p>saprc99_mosaic_8bin_vbs2_aq (chem_opt=203)说明</p>
+<ul>
+<li>
+<p>参考文献<code>Shrivastava, M., Fast, J., Easter, R., Gustafson Jr, W. I., Zaveri, R. A., Jimenez, J. L., Saide, P., and Hodzic, A.: Modeling organic aerosols in a megacity: comparison of simple and complex representations of the volatility basis set approach, Atmos. Chem. Phys., 11, 6639-6662, 10.5194/acp-11-6639-2011, 2011.</code></p>
+</li>
+<li>
+<p><strong>SAPRC-99 mechanism</strong> with <strong>The 9-species VBS mechanism</strong> / <strong>highly condensed 2-species SOA mechanism</strong></p>
+</li>
+<li>
+<p><strong>POA</strong>的计算</p>
+<ul>
+<li>The POA species are segregated by two emissions sectors: biomass burning and anthropogenic (predominately fossil fuel)</li>
+<li>To allow calculating O:C ratios for the modeled OA, separate model species are used for the oxygen and non-oxygen (C, H, N) components of each species.</li>
+<li>POA(a)<em>i,e,x,n</em> = aerosol-phase POA, where i is the volatility species (1–9), e is either the biomass or anthropogenic emission sector, x is either the oxygen or non-oxygen component, and n is the size bin (1–4).</li>
+<li>模式中的POA物种名如，pcg1_b_c、pcg2_f_c</li>
+</ul>
+</li>
+<li>
+<p><strong>SOA</strong>的计算</p>
+<ul>
+<li>
+<p>SOA包括两个部分</p>
+<ul>
+<li>SI-SOA: formation from S/IVOC, 模式中物种名和POA对应，opcg1_b_c、opcg2_f_c<br>
+<img src="https://xiaodongnuist.github.io/post-images/1703231024206.png" alt="" loading="lazy"></li>
+<li>V-SOA: formation from trantional VOCs,模式中物种名分别为ant1_c和biog1_c，分别表示来自人为排放VOC和自然排放VOC
+<ul>
+<li>可以从KPP中的mechanism文件中看出saprc99_mosaic_8bin_vbs2_aq.eqn<br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230959424.png" alt="" loading="lazy"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>WRF-Chem中使用的实际上是<strong>SAPRC-99 mechanism</strong> with <strong>highly condensed 2-species SOA mechanism</strong>，只考虑了2种挥发性的POA，即</p>
+<p>$C<sup>∗ values (at 298 K and 1 atm) of 10</sup>{−2}\ and\ 10<sup>5 µg m</sup>{−3} $</p>
+<ul>
+<li>there are 40 POA species (8 gas, 32 aerosol), 20 SI-SOA species (4 gas, 16 aerosol), and 10 V-SOA species (2 gas, 8 aerosol) （Shrivastava的文章中使用的是4bin的MOSAIC方案）</li>
+<li>其中POA中POA(a)<em>i</em> = 2*,e,x* would almost entirely remain in the gas phase under most atmospheric conditions due to its high volatility，因此模式只输出16个aerosol物种</li>
+<li><strong>注意</strong>： 在8binMOSAIC方案中，V-SOA只输出了4个bin（共8 aerosol，同4bin方案），<strong>其他bin的变量没有输出，在register.chem中有定义</strong></li>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="气溶胶光学性质的计算">气溶胶光学性质的计算</h1>
+<h2 id="总体思路以mosaic方案为例">总体思路（以MOSAIC方案为例）</h2>
+<ul>
+<li>相同bin中内混，不同bin之间外混；对特定的bin[i]：
+<ol>
+<li>计算各组分质量<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>M</mi><mrow><mi>i</mi><mo separator="true">,</mo><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">M_{i,j}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mpunct mtight">,</span><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>和数浓度<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>N</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">N_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></li>
+<li>根据质量和数浓度计算体积<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>V</mi><mrow><mi>i</mi><mo separator="true">,</mo><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">V_{i,j}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mpunct mtight">,</span><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>和直径<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>D</mi><mrow><mi>p</mi><mo separator="true">,</mo><mi>i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">D_{p,i}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">p</span><span class="mpunct mtight">,</span><span class="mord mathdefault mtight">i</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span></li>
+<li>计算负折射指数(这里会根据混合方式的不同[表现在模式中即option_method]分别计算)：
+<ol>
+<li>volume averaging approximation: 总的负折射率等于质量加权平均</li>
+<li>Maxwell-Garnett approximation：根据Maxwell-Garnett计算</li>
+<li>shell-core mixing：分别计算核和壳的负折射指数</li>
+</ol>
+</li>
+<li>调用mie散射算法计算总的吸收效率、散射效率和不对称因子（这里会根据option_mie选项有两种方法）：
+<ol>
+<li>option_mie=1  切比雪夫多项式近似... Chebyshev economization 即简化了Mie散射计算过程</li>
+<li>option_mie=2 完整的Mie散射算法</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="程序中细节说明">程序中细节说明</h2>
+<ul>
+<li>
+<p>气溶胶光学性质参数的计算程序</p>
+<ul>
+<li>
+<p>optical_driver.F</p>
+</li>
+<li>
+<p>module_optical_averaging.F</p>
+</li>
+<li>
+<p>重要的子程序</p>
+</li>
+</ul>
+<ol>
+<li>
+<p>subroutine optical_prep_sectional， 准备Mie散射计算需要的相关数据</p>
+<ul>
+<li>
+<p>根据气溶胶组分数据计算下列变量：</p>
+</li>
+<li>
+<pre><code class="language-fortran">radius_core,radius_wet, number_bin,                     &amp;
+swrefindx,swrefindx_core,swrefindx_shell,               &amp;
+lwrefindx,lwrefindx_core,lwrefindx_shell
+
+!    number_bin_col(nbin_a,kmaxd) --   number density in layer, #/cm^3
+!    radius_wet_col(nbin_a,kmaxd) -- wet radius, shell, cm
+!       radius_core_col(nbin_a,kmaxd) -- core radius, cm; NOTE:
+</code></pre>
+</li>
+<li>
+<p><strong>如果需要修改Mie散射计算结果，可以在此处增加相关变量</strong></p>
+</li>
+</ul>
+</li>
+<li>
+<p>subroutine optical_averaging ，其中，会调用</p>
+<ul>
+<li>
+<p>optical_prep_sectional 子程序： 计算<em>3-D arrays for refractive index, wet radius, and aerosol number then passed into mieaer_sectional</em></p>
+</li>
+<li>
+<p>mieaer程序： <em>produces vertical profiles of aerosol optical properties for 4 wavelengths that are put into 3-D arrays and passed back up to chem_driver.F</em>，其中</p>
+</li>
+<li>
+<p><em>tauaer*, waer*, gaer* passed to module_ra_gsfcsw.F</em></p>
+</li>
+<li>
+<p><em>tauaer*, waer*, gaer*, l2-l7 passed to module_phot_fastj.F</em></p>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+<p>输出变量说明：</p>
+<ul>
+<li>
+<pre><code class="language-fortran">! OUTPUT: saved in module_fastj_cmnmie
+!   real tauaer  ! aerosol optical depth 气溶胶光学厚度
+!        waer    ! aerosol single scattering albedo 单次散射反照率
+!        gaer    ! aerosol asymmetery factor 不对称因子
+!        extaer  ! aerosol extinction 消光
+!        l2,l3,l4,l5,l6,l7 ! Legendre coefficients, numbered 0,1,2,......  勒让德系数
+!        sizeaer ! average wet radius 平均湿半径
+!     bscoef ! aerosol backscatter coefficient with units km-1 * steradian -1  JCB 2007/02/01 气溶胶后向散射系数
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>问题：</p>
+<ul>
+<li>
+<p><strong>如果要修改MIE散射的计算结果，可以在 call mieaer 语句之后添加修改</strong></p>
+</li>
+<li>
+<p>怎么在wrfout中输出tauaer等参数？grid%tauaer1?改register文件， namelist.input中设置  <strong>opt_pars_out             = 1,</strong></p>
+</li>
+<li>
+<p>计算AOD： To calculate AOD, you just need to integrate the extinction coef throughout the entire model column; i.e. multiple the extinction coef by the thickness of the model box and sum all the boxes:</p>
+<p>AOD = ∑ EXT(l) * dz(l)</p>
+<p>With these namelist options, you should have EXTCOEF55 variable in the output that represents the exticntion coefficient at 550 nm in the units of km^-1. You need to calculate layer thickness (can be done by using PH and PHB variables from the WRF-Chem output). The final step is to calculate AOD as multiplication of EXTCOEF55 with the layer thickness (make sure you have it in km).</p>
+</li>
+<li>
+<p>Alternatively, <strong>you can add &quot;tauaer1, tauaer2, tauaer3, and tauaer4&quot; to the model output using runtime I/O option</strong>. They represent layer AOD at 300, 400, 600, and 999 nm. The vertical integral of these quantities will give you total AOD at these wavelengths and then you can use the Angstrom power law to derive AOD at any wavelength.</p>
+</li>
+<li>
+<pre><code class="language-matlab">########################################### Calculation Using MATLAB ####################################################
+
+Height_in_Km = ((PH + PHB)/(9.81))*(1000) ##### This will calculate the height between WRF levels in Km where PH = Perturbation Geopotential and PHB = Base-State Geopotential.
+
+Then if you have number of levels in your output is suppose K
+
+for X=1:K
+    Distance_Between_Levels (:,:,X) = Height_in_Km(:,:,X+1) - Height_in_Km(:,:,X);
+    EXTCOF55_Converted(:,:,X) = (EXTCOF55(:,:,X).*Distance_Between_Levels(:,:,X));
+end
+
+AOD(:,:)= nansum(EXTCOF55_Converted,3);  ############## Mean of the Level Dimension #########
+
+#################################################### END ##############################################################
+</code></pre>
+</li>
+<li>
+<p>The way I calculate AOD is by using the variables named TAUAER1, TAUAER2, TAUAER3 and TAUAER4.</p>
+<p>These variables are the aerosol optical depth of each model layer at 300, 400, 600 and 1000 nm, respectively. To calculate the optical depth at another wavelength then you have to calculate the Angstrom exponent following the formula shown in https://en.wikipedia.org/wiki/Angstrom_exponent</p>
+<p>E.g. I calculate the total AOD in the column at 550 nm using TAUAER2 and TAUAER3 because the 550 nm wavelength falls between 400 and 600 nm:</p>
+<p>angstrom_exponent =  -( log(TAUAER2) - log(TAUAER3) ) / log(400/600)</p>
+<p>AOD550_3D     =  TAUAER2 * ( (400/550) ^ angstrom_exponent )</p>
+<p>AOD550_2D     =  sum(AOD550_2D,3)</p>
+<p>AOD550_3D is the 3-dimensional AOD where you have an optical depth for each layer of your model. Then, the total column AOD is simply the sum across the third dimension.</p>
+<p>If the variables TAUAER<n> are not listed in your model outputs, then you need to modify the registry file for chemistry (Registry/registry.chem)and compile again:</p>
+<p>state   real  tauaer1     ikj   misc     1     -    rh    &quot;TAUAER1&quot;        &quot;bin 1 layer optical thickness&quot; &quot;?&quot;</p>
+<p>state   real  tauaer2     ikj   misc     1     -    rh    &quot;TAUAER2&quot;        &quot;bin 2 layer optical thickness&quot; &quot;?&quot;</p>
+<p>state   real  tauaer3     ikj   misc     1     -    rh    &quot;TAUAER3&quot;        &quot;bin 3 layer optical thickness&quot; &quot;?&quot;</p>
+<p>state   real  tauaer4     ikj   misc     1     -    rh    &quot;TAUAER4&quot;        &quot;bin 4 layer optical thickness&quot; &quot;?&quot;</p>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-fortran">! key options for aerosol optical properities 
+aer_op_opt  ! 1-5 设置光学性质计算方法
+            ! 根据aer_op_opt 设置 option_method 和 option_mie. 
+            ! option_method is used to set the method of aerosol optical properties 
+            ! 1.  volume averaging mixing
+            ! 2. Maxwell-Garnett mixing 
+            ! 3. shell-core
+            ! option_mie is used to set the method of mie routines
+
+     aer_op_opt_select: SELECT CASE(config_flags%aer_op_opt)
+     CASE (VOLUME_APPROX)
+       option_method=1
+       option_mie=1
+     CASE (MAXWELL_APPROX)
+       option_method=2
+       option_mie=1
+     CASE (VOLUME_EXACT)
+       option_method=1
+       option_mie=2
+     CASE (MAXWELL_EXACT)
+       option_method=2
+       option_mie=2
+     CASE (SHELL_EXACT)
+       option_method=3
+       option_mie=2
+     CASE DEFAULT
+
+! option_mie    选择怎么计算mie散射
+! option_method 选择怎么计算光学性质
+
+! namelist.input 选项
+aer_op_opt  = 1 aerosol optical properties calculated based upon volume approximation
+            = 2 aerosol optical properties calculated based upon Maxwell approximation
+            = 3 aerosol optical properties calculated based upon exact volume approximation
+            = 4 aerosol optical properties calculated based upon exact Maxwell approximation
+            = 5 aerosol optical properties calculated based upon exact shell approximation
+! 只有1和2选项才计算长波,后面三个只算短波
+</code></pre>
+<ul>
+<li>
+<p>说明</p>
+<ul>
+<li>
+<p><strong>[Bond et al., 2013, JGR]</strong> 提到: using the Bond and Bergstrom [2006] refractive index and density, <strong>Adachi et al. [2010]</strong> calculated <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>M</mi><mi>A</mi><msub><mi>C</mi><mrow><mi>B</mi><mi>C</mi></mrow></msub></mrow><annotation encoding="application/x-tex">MAC_{BC}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord mathdefault">A</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.05017em;">B</span><span class="mord mathdefault mtight" style="margin-right:0.07153em;">C</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> for uncoated spheres as 6.4 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>m</mi><mn>2</mn></msup><msup><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m^2g^{-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.008548em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">m</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span></span>, with increases for volume mixing (13.6 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>m</mi><mn>2</mn></msup><msup><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m^2g^{-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.008548em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">m</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span></span>), core shell (13.3 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>m</mi><mn>2</mn></msup><msup><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m^2g^{-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.008548em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">m</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span></span>), Maxwell-Garnet effective medium approximation (12.0 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>m</mi><mn>2</mn></msup><msup><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m^2g^{-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.008548em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">m</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span></span>), and realistic coated BC particles (9.9 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>m</mi><mn>2</mn></msup><msup><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m^2g^{-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.008548em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">m</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span></span>) at 550 nm wavelength.</p>
+</li>
+<li>
+<p>Climate models assume soot particles are spherical and</p>
+<p>(1) uncoated (<strong>external‐mixing model</strong>),</p>
+<p>(2) concentrically coated (<strong>core‐shell model</strong>),</p>
+<p>(3) <strong>homogeneously mixed</strong> with other materials on a molecular scale (<strong>volume‐mixing model)</strong>,</p>
+<p>(4) mixed with other aerosol particles according to rules such as the <strong>Maxwell‐Garnet effective medium approximation</strong> (MGEMA), which assumes that isolated soot spherules are suspended in an embedding material<br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230994113.png" alt="" loading="lazy"></p>
+</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/ygY1rU5SGV/" class="tag">
+                    WRF-Chem
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/WRFChem气溶胶光学性质/">
+                  <h3 class="post-title">
+                    WRFChem气溶胶光学性质
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

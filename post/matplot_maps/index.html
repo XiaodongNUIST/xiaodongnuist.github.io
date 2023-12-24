@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>标准地图问题 | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+标准地图审图号shp
+南海地图
+
+
+标准地图审图号shp
+
+GS(2020)4619
+
+shpdir = &quot;D:/云文件/数据/shpfiles/GS(2020)4619&quot;
+world_border  = Reader..." />
+    <meta name="keywords" content="visualization" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">标准地图问题</h2>
+            <div class="post-date">2022-10-25</div>
+            
+            <div class="post-content" v-pre>
+              <p><ul class="markdownIt-TOC">
+<li><a href="#%E6%A0%87%E5%87%86%E5%9C%B0%E5%9B%BE%E5%AE%A1%E5%9B%BE%E5%8F%B7shp">标准地图审图号shp</a></li>
+<li><a href="#%E5%8D%97%E6%B5%B7%E5%9C%B0%E5%9B%BE">南海地图</a></li>
+</ul>
+</p>
+<h1 id="标准地图审图号shp">标准地图审图号shp</h1>
+<ul>
+<li>GS(2020)4619</li>
+</ul>
+<pre><code class="language-python">shpdir = &quot;D:/云文件/数据/shpfiles/GS(2020)4619&quot;
+world_border  = Reader(f&quot;{shpdir}/coastline_withoutchina.shp&quot;)
+china_border  = Reader(f&quot;{shpdir}/china.shp&quot;)
+province_border  = Reader(f&quot;{shpdir}/province.shp&quot;)
+ax.add_geometries(china_border.geometries(),
+                  ccrs.PlateCarree(),edgecolor='k', linewidth=0.5, zorder=3,
+                  facecolor='none')
+ax.add_geometries(province_border.geometries(),
+                  ccrs.PlateCarree(),edgecolor='k', linewidth=0.2, zorder=3,ls='--',
+                  facecolor='none')
+ax.add_geometries(world_border.geometries(),
+                  ccrs.PlateCarree(),edgecolor='k', linewidth=0.2, zorder=3,
+                  facecolor='none')
+</code></pre>
+<h1 id="南海地图">南海地图</h1>
+<ul>
+<li>注意需要和主图一样的填充数据</li>
+</ul>
+<pre><code class="language-python"># 南海小地图
+ax_n = inset_axes(ax, &quot;100%&quot;, &quot;100%&quot;, 
+                  bbox_to_anchor=(0.88,0.01,0.15,0.3),
+                  bbox_transform=ax.transAxes, #loc=&quot;center&quot;,
+                  axes_class=GeoAxes, 
+                  axes_kwargs=dict(map_projection=proj))
+ax_n.pcolor(x, y, data2d, cmap=incmap,vmin=z_min, vmax=z_max,alpha=0.8)
+ax_n.set_extent([105, 123, 0, 25], ccrs.PlateCarree())
+ax_n.add_geometries(china_border.geometries(),
+                    ccrs.PlateCarree(),edgecolor='k', linewidth=0.2, zorder=2,
+                    facecolor='none')
+</code></pre>
+<ul>
+<li>实例脚本</li>
+</ul>
+<pre><code class="language-python">def csplot(ax,x,y,data2d,incmap=cmaps.GMT_seis_r,z_min=0,z_max=75,htitle=None,vtitle=None,addmax=0,final=False,proj=None):
+    cs = ax.pcolor(x, y, data2d, cmap=incmap,vmin=z_min, vmax=z_max,edgecolors='face')
+    if(final):
+        ax.add_geometries(world_border.geometries(),
+                    ccrs.PlateCarree(),edgecolor='k', linewidth=0.2, zorder=2,
+                    facecolor='none')
+        ax.add_geometries(china_border.geometries(),
+                    ccrs.PlateCarree(),edgecolor='k', linewidth=0.5, zorder=2,
+                    facecolor='none')
+    # 设置 colorbar
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    if (addmax==1):
+      for key,values in regiondict.items():
+        number = regionmean(data2d,values)
+        # number = data2d.max()
+        ax.text(0.02, 1.-values*0.1, '%s: %.1f' %(key,number),fontsize=12,transform=ax.transAxes, ha='left', va='center',
+        color='k',zorder=3,) # bbox=dict(boxstyle=&quot;square&quot;,ec='w',fc='w',alpha=.8))
+      xy2 = np.array([0.0,0.45])
+      if(number&gt;100):
+        rect = mpathes.Rectangle(xy2,0.38,0.6,color='#8ecae6',transform=ax.transAxes,zorder=3)
+      else:
+        rect = mpathes.Rectangle(xy2,0.35,0.6,color='#8ecae6',transform=ax.transAxes,zorder=3)
+      ax.add_patch(rect)
+    elif(addmax==0):
+        number = data2d.mean()
+        ax.text(0.08, .1, '%.1f' %(number),fontsize=12,transform=ax.transAxes, ha='left', va='center',
+        color='k',
+        bbox=dict(boxstyle=&quot;square&quot;,ec='w',fc='w',alpha=.8)
+        )
+    else:
+        pass
+    if(htitle): ax.text(0.5, 1.1, htitle,fontsize=15,transform=ax.transAxes, ha='center', va='center')
+    if(vtitle): ax.text(-0.1, 0.5, vtitle,fontsize=15,transform=ax.transAxes,rotation='vertical', ha='center', va='center')
+###############################################################################################################
+    # 南海小地图
+    ax_n = inset_axes(ax, &quot;100%&quot;, &quot;100%&quot;, 
+                        bbox_to_anchor=(0.88,0.01,0.15,0.3),
+                        bbox_transform=ax.transAxes, #loc=&quot;center&quot;,
+                        axes_class=GeoAxes, 
+                 axes_kwargs=dict(map_projection=proj))
+    ax_n.pcolor(x, y, data2d, cmap=incmap,vmin=z_min, vmax=z_max,alpha=0.8)
+    ax_n.set_extent([105, 123, 0, 25], ccrs.PlateCarree())
+    ax_n.add_geometries(china_border.geometries(),
+                ccrs.PlateCarree(),edgecolor='k', linewidth=0.2, zorder=2,
+                facecolor='none')
+###############################################################################################################
+    return cs, ax_n
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/LCt4Cp1KS/" class="tag">
+                    visualization
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/折线图/">
+                  <h3 class="post-title">
+                    折线图
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

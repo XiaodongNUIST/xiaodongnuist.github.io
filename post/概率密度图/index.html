@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>概率密度图 | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+
+
+exam 01
+exam 02
+
+
+
+
+exam 01
+y1 = orgdata[&quot;O3&quot;]
+y2 = dwedata[&quot;O3&quot;]
+
+config = {
+    'xtick.directio..." />
+    <meta name="keywords" content="visualization" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">概率密度图</h2>
+            <div class="post-date">2022-10-25</div>
+            
+              <div class="feature-container" style="background-image: url('https://xiaodongnuist.github.io/post-images/概率密度图.png')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#exam-01">exam 01</a></li>
+<li><a href="#exam-02">exam 02</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="exam-01">exam 01</h2>
+<pre><code class="language-python">y1 = orgdata[&quot;O3&quot;]
+y2 = dwedata[&quot;O3&quot;]
+
+config = {
+    'xtick.direction': 'in',
+    'xtick.major.size':  2,
+    'xtick.minor.size':  1,
+    'ytick.direction': 'in',
+    'ytick.major.size':  2,
+    'ytick.minor.size':  1,
+    'axes.labelpad': 2.0,
+}
+plt.rcParams.update(config)
+
+fig, ax = plt.subplots(1,1,figsize=(4,2))
+
+ax.hist(y1, 50, histtype='step', stacked=True, fill=False, density=True,label=[&quot;Obs.&quot;])
+
+ax.hist(y2, 50, histtype='step', stacked=True, fill=False, density=True,label=[&quot;De-weather&quot;])
+
+pmax = 0.02
+ax.set_yticks(np.linspace(0,pmax,5))
+ax.set_yticklabels(np.linspace(0,pmax*1000,5,dtype=int))
+
+ax.set_ylabel(r'$Probability\ density\ (\times 10^{-3})$')
+ax.legend()
+
+ax.set_xlabel(r&quot;$O_{3}\ concentrations\ (\mu g\ m^{-3})$&quot;)
+figname = f&quot;{homepath}/figures/O3_pdf.png&quot;
+plt.savefig(figname, dpi=300, bbox_inches='tight',pad_inches = 0.05, facecolor='w') 
+</code></pre>
+<h2 id="exam-02">exam 02</h2>
+<pre><code class="language-python">x = dfs.a
+
+num_bins = 50
+
+fig, ax = plt.subplots(figsize=(2,2))
+
+# the histogram of the data
+values, base, _  = ax.hist(x, num_bins, density=True,ec=&quot;k&quot;,lw=0.1)
+
+ax_bis = ax.twinx()
+values = np.append(values,0)
+ax_bis.plot( base, np.cumsum(values)/ np.cumsum(values)[-1], color='darkorange', marker='o', linestyle='-', markersize = 1)
+
+ax.set_xlabel('slope')
+ax.set_ylabel('Probability density')
+ax.axvline(x=0,c='k',lw=0.5)
+
+fig.tight_layout()
+plt.savefig('../figures/slope_histogram',bbox_inches='tight',pad_inches = 0.05, dpi=300, facecolor='w')
+</code></pre>
+<pre><code class="language-python">def pdf_cdf(ax, y, num_bins = 100):
+    res_freq = stats.relfreq(y,num_bins)
+    pdf_value = res_freq.frequency
+    cdf_value = np.cumsum(pdf_value)
+    x = res_freq.lowerlimit + np.linspace(0,res_freq.binsize*(res_freq.frequency.size-1), res_freq.frequency.size)
+
+    ax.bar(x,pdf_value,width=res_freq.binsize,color=colorblind[0],lw=0.2)
+    axw = ax.twinx()
+    axw.plot(x,cdf_value,'-',c=colorblind[1],lw=1)
+    axw.set_ylim(0,1)
+
+    ax.set_xlabel('$\Delta{MDA8}\ (\%)$',labelpad=1)
+    ax.set_ylabel('Probability density')
+    ax.set_xlim(-100,100)
+    ax.axvline(x=0,lw=0.5,color='k')
+    print(cdf_value[np.where(x&gt;0)])
+
+fig, ax = plt.subplots(1,1,figsize=(2,2))
+pdf_cdf(ax, y)
+figname = f&quot;{homepath}/figures/pdf_cdf_{city}.png&quot;
+plt.savefig(figname, dpi=300, bbox_inches='tight',pad_inches = 0.05, facecolor='w') 
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://xiaodongnuist.github.io/post-images/1703231690284.png" alt="" loading="lazy"></figure>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/LCt4Cp1KS/" class="tag">
+                    visualization
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/污染观测数据处理/">
+                  <h3 class="post-title">
+                    污染观测数据处理说明
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

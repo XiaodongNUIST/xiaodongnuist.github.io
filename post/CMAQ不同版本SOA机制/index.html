@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>CMAQ不同版本SOA机制 | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+
+
+
+
+CMAQ v4.7
+CMAQ v5.1
+CMAQ v5.2
+CMAQ v5.3
+组内版本
+
+
+
+
+
+
+CMAQ v4.7
+
+
+参考Carlton et al., 2010, EST. Model Representation of..." />
+    <meta name="keywords" content="CMAQ" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">CMAQ不同版本SOA机制</h2>
+            <div class="post-date">2022-10-25</div>
+            
+              <div class="feature-container" style="background-image: url('https://xiaodongnuist.github.io/post-images/CMAQ不同版本SOA机制.png')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#cmaq-v47">CMAQ v4.7</a></li>
+<li><a href="#cmaq-v51">CMAQ v5.1</a></li>
+<li><a href="#cmaq-v52">CMAQ v5.2</a></li>
+<li><a href="#cmaq-v53">CMAQ v5.3</a></li>
+<li><a href="#%E7%BB%84%E5%86%85%E7%89%88%E6%9C%AC">组内版本</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h3 id="cmaq-v47">CMAQ v4.7</h3>
+<ul>
+<li>
+<p>参考Carlton et al., 2010, EST. <strong>Model Representation of Secondary Organic Aerosol in CMAQv4.7</strong></p>
+</li>
+<li>
+<p>In CMAQv4.7, SOA is produced from an expanded list of precursors (Table 1) and can be formed via both gas- and</p>
+<p>aqueous-phase oxidation processes, as well as aerosol-phase reactions. Seven of the 19 secondary organic PM species are</p>
+<p>treated as nonvolatile (dark-shaded rectangles in Figure 1). The 12 remaining species are semivolatile and have ∆Hvap</p>
+<p>values reduced in accordance with recent experimental data.</p>
+<p><img src="https://xiaodongnuist.github.io/post-images/1703230105431.png" alt="" loading="lazy"><br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230116145.png" alt="" loading="lazy"><br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230127995.png" alt="" loading="lazy"></p>
+<ul>
+<li>半挥发的部分会发生凝聚相低聚反应生成AOLGA 和AOLGB,  GLY和MGLY是云中的液相反应</li>
+</ul>
+</li>
+</ul>
+<h3 id="cmaq-v51">CMAQ v5.1</h3>
+<ul>
+<li>参考Appel et al., 2017, GMD <strong>Description and evaluation of the Community Multiscale Air Quality (CMAQ) modeling system version 5.1</strong></li>
+<li>在CMAQ v5.0.2 （和4.7改变不大）基础上修改<br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230156227.png" alt="" loading="lazy"></li>
+<li>更新了isoprene生成SOA的过程（Pye et al., 2013, EST)：isoprene和OH的反应产物ISOPO2在低/高NOx条件下分别和HO2和NO反应生成IEPOX和MAE（以及HMML），随后IEPOX、MAE和HMML通过非均相反应生成：AIETETJ   AIEOSJ   ADIMJ     AIMGAJ    AIMOSJ<br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230174445.png" alt="" loading="lazy"></li>
+<li>更新有机硝酸盐部分（Pye et al., 2015, EST）：
+<ul>
+<li>isoprene和NO3反应生成ISOPNN，进一步生成半挥发性硝酸盐： AISOPNNJ</li>
+<li>terprene和NO3反应生成MTNO3，进一步生成半挥发性硝酸盐：AMTNO3J</li>
+<li>AISOPNNJ和AMTNO3J  会非均相水解生成AMTHYDJ</li>
+</ul>
+</li>
+<li>增加GLY和MGLY非均相过程，生成AGLYJ</li>
+<li>5.1版本SOA生成概念图（Pye et al., 2017, ACP）<br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230196355.png" alt="" loading="lazy"><br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230201601.png" alt="" loading="lazy"></li>
+</ul>
+<h3 id="cmaq-v52">CMAQ v5.2</h3>
+<ul>
+<li>
+<p>参考 <a href="https://github.com/USEPA/CMAQ/blob/5.2/CCTM/docs/Release_Notes/README.md">CMAQ/CCTM/docs/Release_Notes/README.md at 5.2 · USEPA/CMAQ · GitHub</a></p>
+</li>
+<li>
+<p>主要参考文献（Murphy et al., 2017, ACP）（Pye et al., 2017, ACP）</p>
+</li>
+<li>
+<p>更新POA部分，5.1中POA分为POC+NCOM, 5.2中考虑了不同的挥发性的差异（Murphy et al., 2017, ACP）</p>
+<ul>
+<li>
+<p>POA多级氧化</p>
+<ul>
+<li>
+<p>POA划分为不同的挥发性,存在gas和aerosol两种相态：低挥发性V/ALVPO1, 半挥发性V/ASVPO(1,2,3),中等挥发性V/AIVPO(1);</p>
+</li>
+<li>
+<p>部分gas phase POA本身通过气粒分配生成aerosol phase POA（ALVPO1J等）</p>
+</li>
+<li>
+<p>气相机制中POA(g)老化生成对应的氧化产物VLVPO1 等，最后气粒分配生成SOA（ALVOO1J等）</p>
+</li>
+<li>
+<pre><code class="language-fortran">! part 1. emissions in GC.nml
+'VLVPO1:218:POC:1.0:VD_ORA:1:::ADIPIC_ACID:1:VLVPO1::Yes:Yes:Yes:Yes',
+'VSVPO1:230:POC:1.0:VD_ORA:1:::ADIPIC_ACID:1:VSVPO1::Yes:Yes:Yes:Yes',
+'VSVPO2:241:POC:1.0:VD_ORA:1:::ADIPIC_ACID:1:VSVPO2::Yes:Yes:Yes:Yes',
+'VSVPO3:253:POC:1.0:VD_ORA:1:::ADIPIC_ACID:1:VSVPO3::Yes:Yes:Yes:Yes',
+'VIVPO1:266:POC:1.0:VD_ORA:1:::ADIPIC_ACID:1:VIVPO1::Yes:Yes:Yes:Yes',
+'VLVOO1:136:::VD_ORA:1:::ADIPIC_ACID:1:VLVOO1::Yes:Yes:Yes:Yes',
+'VLVOO2:136:::VD_ORA:1:::ADIPIC_ACID:1:VLVOO2::Yes:Yes:Yes:Yes',
+'VSVOO1:135:::VD_ORA:1:::ADIPIC_ACID:1:VSVOO1::Yes:Yes:Yes:Yes',
+'VSVOO2:135:::VD_ORA:1:::ADIPIC_ACID:1:VSVOO2::Yes:Yes:Yes:Yes',
+'VSVOO3:134:::VD_ORA:1:::ADIPIC_ACID:1:VSVOO3::Yes:Yes:Yes:Yes',
+
+! part 2. reaction with OH to produce PCSOARXN in mech.def
+! Aging with Func. and Frag. (Donahue et al. 2012)
+&lt;POA_AGE1&gt; VLVPO1 + OH = OH
+      + 0.4857 * VLVPO1 + 0.0062 * VSVPO1
+      + 0.0025 * VSVPO2 + 0.0026 * VSVPO3
+      + 0.0023 * VIVPO1 + 0.2944 * VLVOO1
+      + 0.2021 * VLVOO2 + 0.0019 * VSVOO2
+      + 0.0023 * VSVOO3                   #4.0e-11;
+&lt;POA_AGE2&gt; VSVPO1 + OH = OH
+      + 0.3003 * VLVPO1 + 0.2862 * VSVPO1
+      + 0.0041 * VSVPO2 + 0.0035 * VSVPO3
+      + 0.2239 * VLVOO1 + 0.1820 * VLVOO2 #4.0e-11;
+&lt;POA_AGE3&gt; VSVPO2 + OH = OH
+      + 0.3856 * VLVPO1 + 0.0950 * VSVPO1
+      + 0.1373 * VSVPO2 + 0.0005 * VSVPO3
+      + 0.2051 * VLVOO1 + 0.1764 * VLVOO2 #4.0e-11;
+&lt;POA_AGE4&gt; VSVPO3 + OH = OH
+      + 0.2181 * VLVPO1 + 0.3063 * VSVPO1
+      + 0.0153 * VSVPO2 + 0.1043 * VSVPO3
+      + 0.1893 * VLVOO1 + 0.1668 * VLVOO2 #4.0e-11;
+&lt;POA_AGE5&gt; VIVPO1 + OH = OH
+      + 0.2412 * VLVPO1 + 0.2089 * VSVPO1
+      + 0.3000 * VSVPO2 + 0.2028 * VLVOO1
+      + 0.0471 * VLVOO2                   #4.0e-11;
+&lt;POA_AGE6&gt; VLVOO1 + OH = OH
+      + 0.6664 * VLVOO1 + 0.0143 * VLVOO2
+      + 0.0123 * VSVOO1 + 0.1239 * VSVOO2
+      + 0.1831 * VSVOO3                   #4.0e-11;
+&lt;POA_AGE7&gt; VLVOO2 + OH = OH
+      + 0.2858 * VLVOO1 + 0.3931 * VLVOO2
+      + 0.0139 * VSVOO1 + 0.1027 * VSVOO2
+      + 0.2045 * VSVOO3                   #4.0e-11;
+&lt;POA_AGE8&gt; VSVOO1 + OH = OH
+      + 0.3303 * VLVOO1 + 0.2272 * VLVOO2
+      + 0.2607 * VSVOO1 + 0.0702 * VSVOO2
+      + 0.1116 * VSVOO3                   #4.0e-11;
+&lt;POA_AGE9&gt; VSVOO2 + OH = OH
+      + 0.3444 * VLVOO1 + 0.2749 * VLVOO2
+      + 0.0491 * VSVOO1 + 0.2577 * VSVOO2
+      + 0.0739 * VSVOO3                   #4.0e-11;
+&lt;POA_AGE10&gt; VSVOO3 + OH = OH
+      + 0.3886 * VLVOO1 + 0.2421 * VLVOO2
+      + 0.0640 * VSVOO1 + 0.0385 * VSVOO2
+      + 0.2667 * VSVOO3                   #4.0e-11;
+
+! part 3. SOA production in SOA_DEFN.F
+     &amp; vapor_type('VLVPO1  ',  0.0000,    1.e-1,  96.0E3, 'ALVPO1J', 'A',  0.0, '        '),
+     &amp; vapor_type('VSVPO1  ',  0.0000,    1.e+0,  85.0E3, 'ASVPO1J', 'A',  0.0, '        '),
+     &amp; vapor_type('VSVPO2  ',  0.0000,    1.e+1,  74.0E3, 'ASVPO2J', 'A',  0.0, '        '),
+     &amp; vapor_type('VSVPO3  ',  0.0000,    1.e+2,  63.0E3, 'ASVPO3J', 'A',  0.0, '        '),
+     &amp; vapor_type('VIVPO1  ',  0.0000,    1.e+3,  52.0E3, 'AIVPO1J', 'A',  0.0, '        '),
+     &amp; vapor_type('VLVOO1  ',  0.0000,    1.e-2, 107.0E3, 'ALVOO1J', 'A',  0.0, '        '),
+     &amp; vapor_type('VLVOO2  ',  0.0000,    1.e-1,  96.0E3, 'ALVOO2J', 'A',  0.0, '        '),
+     &amp; vapor_type('VSVOO1  ',  0.0000,    1.e+0,  85.0E3, 'ASVOO1J', 'A',  0.0, '        '),
+     &amp; vapor_type('VSVOO2  ',  0.0000,    1.e+1,  74.0E3, 'ASVOO2J', 'A',  0.0, '        '),
+     &amp; vapor_type('VSVOO3  ',  0.0000,    1.e+2,  63.0E3, 'ASVOO3J', 'A',  0.0, '        ')/)
+
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>Potential Combustion SOA：APCSOJ（这部分的加入是为了补偿IVOC氧化，wall loss, VOC产物多级氧化等过程的缺失）</p>
+<ul>
+<li>
+<pre><code class="language-fortran">! part 1. emissions in GC.nml
+'PCVOC:170:POC:0.0387:VD_GEN_ALD:1.0:::GENERIC_ALDEHYDE:1.0:::Yes:Yes:Yes:Yes',
+
+! part 2. reaction with OH to produce PCSOARXN in mech.def
+! Formation of Potential Combustion SOA (pcSOA)
+&lt;PCSOA&gt;  PCVOC + OH       = OH  + PCSOARXN  # 1.25E-11;
+
+! part 3. SOA production in SOA_DEFN.F
+     &amp; vapor_type('LV_PCSOG',  1.0   ,   1.0e-5,  40.0E3, 'APCSOJ ', 'A', 10.0, 'PCSOARXN'),
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>更新Glyoxal and methylglyoxal SOA updates （Pye et al., 2017, ACP）</p>
+<ul>
+<li>在5.1版本上修改 uptake coefficient of MGLY</li>
+</ul>
+</li>
+<li>
+<p>更新SOA的一些属性：Several properties of semivolatile SOA species (aerosol and nonreactives) were updated: number of carbon atoms per molecule, density, organic-mass-to-organic-carbon (OM/OC) ratio (now in species definition file), and molecular weights. In addition, unique dry and wet deposition surrogates were implemented for each semivolatile species. See Pye et al. (2017) for how updated properties were determined</p>
+</li>
+<li></li>
+</ul>
+<h3 id="cmaq-v53">CMAQ v5.3</h3>
+<ul>
+<li>参考Appel et al., 2021, GMD; Xu et al., 2018, ACP; Qin et al., 2021, NS</li>
+<li>增加aero7气溶胶方案，注意编译的时候选择</li>
+<li>aero7中更新 organic nitrates from monoterpenes机制，原有的ATRP(1,2)替换为AMT(1-7),模式中实际只有AMT1-6,SVMT7 is ignored assuming it does not condense appreciably to the particle phase.</li>
+<li>注意排放处理的时候需要单独出<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>α</mi><mo>−</mo><mi>p</mi><mi>i</mi><mi>n</mi><mi>e</mi><mi>n</mi><mi>e</mi></mrow><annotation encoding="application/x-tex">\alpha-pinene</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault" style="margin-right:0.0037em;">α</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span><span class="mord mathdefault">i</span><span class="mord mathdefault">n</span><span class="mord mathdefault">e</span><span class="mord mathdefault">n</span><span class="mord mathdefault">e</span></span></span></span> ； Use the emission control file and assign 30% of emitted TERP to APIN and 70% of emitted TERP to TERP.<br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230229782.png" alt="" loading="lazy"><br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230234243.png" alt="" loading="lazy"></li>
+<li>a图是aero6中的SOA，b图是Xu et al., 2018, ACP更新部分（AMT1-7），红色表示新增，蓝色表示删除的部分</li>
+<li>基于VBS框架的SOA生成，AAVB1J, AAVB2J, AAVB3J, AAVB4J替换aero6中的人为源部分ABNZ1J, ABNZ2J, ABNZ3J, SV_BNZ1, SV_BNZ2, AXYL1J, AXYL2J, AXYL3J, SV_XYL1, SV_XYL2, ATOL1J, ATOL2J, ATOL3J, SV_TOL1, SV_TOL2, APAH1J, APAH2J, APAH3J, SV_PAH1, SV_PAH2, AALK1J, AALK2J, SV_ALK1, SV_ALK2,详见Qin et al., 2021. <strong>Supplementary Table 5.</strong></li>
+<li>在mech.def文件中，原有的BNZNRXN等替换为对应的SVAVB1-4，详见Qin et al., 2021. <strong>Supplementary Table 4.</strong></li>
+<li>物种生成路径（源解析标记物种说明）：
+<ol>
+<li>AAVB1J， AAVB2J， AAVB3J， AAVB4J</li>
+</ol>
+</li>
+</ul>
+<h3 id="组内版本">组内版本</h3>
+<ul>
+<li>
+<p>默认黑色箭头，半挥发性 SV-SOA</p>
+<ul>
+<li>ALK5， BNZ， ARO，XYL，ISO，TERP，SESQT</li>
+<li>烷烃，苯，芳香烃，二甲苯，异戊二烯，单萜烯 ，倍半萜烯</li>
+</ul>
+</li>
+<li>
+<p>红色： 非挥发性 NV-SOA</p>
+<ul>
+<li>乙二醛（GLY），甲基乙二醛（MGLY），异戊二烯环氧化物（IEPOX）和甲基丙烯酸环氧化物（MAE）<br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230251058.png" alt="" loading="lazy"></li>
+</ul>
+</li>
+<li>
+<p>对SOA的相对贡献<br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230275518.png" alt="" loading="lazy"><br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230282588.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>SV-SOA and NV-SOA<br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230297980.png" alt="" loading="lazy"><br>
+<img src="https://xiaodongnuist.github.io/post-images/1703230304486.png" alt="" loading="lazy"></p>
+</li>
+</ul>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/3lSf94n0Rv/" class="tag">
+                    CMAQ
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/CMAQ代码流程/">
+                  <h3 class="post-title">
+                    CMAQ代码说明
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

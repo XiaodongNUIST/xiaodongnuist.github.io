@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>hexo备份 | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="#[TOC]
+Hexo博客如何备份到Github
+Hexo博客备份
+创建新分支
+在Github上博客仓库下创建一个新的分支hexo，并且将这个分支设置为默认分支，具体操作如下：
+
+20220511_03.png
+
+20220511_04.p..." />
+    <meta name="keywords" content="other" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">hexo备份</h2>
+            <div class="post-date">2022-10-23</div>
+            
+            <div class="post-content" v-pre>
+              <p>#[TOC]</p>
+<h1 id="hexo博客如何备份到github">Hexo博客如何备份到Github</h1>
+<h2 id="hexo博客备份">Hexo博客备份</h2>
+<h3 id="创建新分支">创建新分支</h3>
+<p>在<code>Github</code>上博客仓库下创建一个新的分支<code>hexo</code>，并且将这个分支设置为默认分支，具体操作如下：</p>
+<figure data-type="image" tabindex="1"><img src="hexo%E5%A4%87%E4%BB%BD/1642508-61f52f7ed4251885.png" alt="img" loading="lazy"></figure>
+<p>20220511_03.png</p>
+<figure data-type="image" tabindex="2"><img src="hexo%E5%A4%87%E4%BB%BD/1642508-18cbfa4d2b1dac53.png" alt="img" loading="lazy"></figure>
+<p>20220511_04.png</p>
+<figure data-type="image" tabindex="3"><img src="hexo%E5%A4%87%E4%BB%BD/1642508-b13c0790e40c52ae.png" alt="img" loading="lazy"></figure>
+<p>20220511_05.png</p>
+<h3 id="克隆hexo分支">克隆hexo分支</h3>
+<p>在本地把我们刚建的分支<code>hexo</code>克隆到本地：</p>
+<figure data-type="image" tabindex="4"><img src="hexo%E5%A4%87%E4%BB%BD/1642508-e87f19cfc93ffa94.png" alt="img" loading="lazy"></figure>
+<p>20220511_06.png</p>
+<p>把克隆下来的项目里面的<code>.git</code>文件复制到我们的Hexo博客目录下:</p>
+<figure data-type="image" tabindex="5"><img src="hexo%E5%A4%87%E4%BB%BD/1642508-42e7569d97440356.png" alt="img" loading="lazy"></figure>
+<p>20220511_07.png</p>
+<p><strong>注意</strong>：如果之前搭建博客的时候自己更换过主题文件的，请把主题文件里面的<code>.git</code>文件删除。</p>
+<h3 id="开始备份">开始备份</h3>
+<p>进入到Blogs根目录下，执行如下命令：</p>
+<pre><code class="language-bash">git add .
+git commit -m &quot;Blog源文件备份&quot;
+git push origin hexo
+</code></pre>
+<p>这时候我们会看到<code>Github</code>上的<code>hexo</code> 分支就有我们的源文件了。</p>
+<figure data-type="image" tabindex="6"><img src="hexo%E5%A4%87%E4%BB%BD/1642508-4fb324fec7446605.png" alt="img" loading="lazy"></figure>
+<p>20220511_08.png</p>
+<p>如果你想要每次更改东西都希望备份到<code>hexo</code> 分支上，可以执行如下步骤：</p>
+<pre><code class="language-csharp">hexo clean
+git add .
+git commit -m &quot;2022&quot;
+git push
+hexo g &amp; hexo d
+</code></pre>
+<h2 id="如何恢复博客">如何恢复博客</h2>
+<p>假如我们现在更换了电脑，希望在新的电脑上继续写博客，把<code>Github</code>上<code>hexo</code>分支上的项目克隆到本地（注意：是我们备份的那个分支）</p>
+<p>进入到克隆下来的文件夹，执行如下命令：</p>
+<pre><code class="language-undefined">npm install hexo-cli
+npm install hexo-deployer-git
+</code></pre>
+<p>然后再去安装主题相关的插件即可，当然如果你电脑上还没有 <code>Node.js</code>等环境的话可能还需要去安装相关的环境。<br>
+现在我们就基本上可以在另一台电脑上继续我们的博客之旅啦～</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/96ANCcG7AI/" class="tag">
+                    other
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/numpy/">
+                  <h3 class="post-title">
+                    numpy
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>提取污染观测数据 | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+观测数据匹配到模式网格上
+
+
+观测数据匹配到模式网格上
+
+site_to_grid.py
+
+#!/home/xdxie/packages/miniconda/envs/atmos/bin/python
+# -*- coding: utf-..." />
+    <meta name="keywords" content="data,analysis" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">提取污染观测数据</h2>
+            <div class="post-date">2022-10-25</div>
+            
+            <div class="post-content" v-pre>
+              <p><ul class="markdownIt-TOC">
+<li><a href="#%E8%A7%82%E6%B5%8B%E6%95%B0%E6%8D%AE%E5%8C%B9%E9%85%8D%E5%88%B0%E6%A8%A1%E5%BC%8F%E7%BD%91%E6%A0%BC%E4%B8%8A">观测数据匹配到模式网格上</a></li>
+</ul>
+</p>
+<h1 id="观测数据匹配到模式网格上">观测数据匹配到模式网格上</h1>
+<ul>
+<li><code>site_to_grid.py</code></li>
+</ul>
+<pre><code class="language-python">#!/home/xdxie/packages/miniconda/envs/atmos/bin/python
+# -*- coding: utf-8 -*- 
+#****************************************************************#
+#&gt;  average site data to model grid
+#&gt;  can be used to compare the spatial distribution of simulation
+#&gt;  author: xiaodong xie @ 2023-4
+#****************************************************************#
+from math import radians,sin,cos,asin,sqrt
+import xarray as xr
+import pandas as pd
+import numpy as np
+#****************************************************************************************************#
+# user config
+year = 2016
+stime = &quot;2016-12-11 00:00:00&quot;
+etime = &quot;2016-12-19 23:00:00&quot;
+GeoFile = &quot;/r008/xdxie/data/wrfchemdata/beijing201612/presource/domain/geo_em.d02.nc&quot;
+OutFile = &quot;/r008/xdxie/data/wrfchemdata/beijing201612/observation/obs.d02.timemean_20161211-1219.csv&quot;
+inpdatadir = '/r008/xdxie/data/obs/airquality'
+#****************************************************************************************************#
+f = xr.open_dataset(GeoFile)
+lat2d = f['XLAT_M'].sel(Time=0)
+lon2d = f['XLONG_M'].sel(Time=0)
+allsite = pd.read_csv(f&quot;{inpdatadir}/obssiteinfo.csv&quot;,encoding='gbk')
+
+def haversine_dis(lon1, lat1, lon2, lat2):
+    #将十进制转为弧度
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+    #haversine公式
+    d_lon = lon2 - lon1
+    d_lat = lat2 - lat1
+    aa = sin(d_lat/2)**2 + cos(lat1)*cos(lat2)*sin(d_lon/2)**2
+    c = 2 * asin(sqrt(aa))
+    r = 6371 # 地球半径，千米
+    return c*r*1000
+
+def findij(latlon):
+    a = abs(lat2d-latlon['lat'])+abs(lon2d-latlon['lon'])
+    i,j = np.unravel_index(a.argmin(),a.shape)
+    if (haversine_dis(lon2d[i,j], lat2d[i,j], latlon['lon'], latlon['lat']) &gt; f.DX):
+        return np.nan
+    else:
+        return [i,j]
+
+def read_station_hourly_data(StationCode, year, stime, etime):
+    temp = allsite.query(&quot;StationCode == @StationCode&quot;)
+    ProvinceCode  = temp.ProvinceCode.values[0]
+    CityCode = temp.CityCode.values[0]
+    df = pd.read_csv(f&quot;{inpdatadir}/QC+PPB/hour/{year}/{ProvinceCode}_{CityCode}_{StationCode}_{year}.csv&quot;,
+                           index_col=&quot;datetime&quot;)
+    df.index = pd.to_datetime(df.index,format=&quot;%Y-%m-%d %H:%M:%S&quot;)
+    return df.loc[stime:etime]
+
+latlons = allsite.loc[:,['lat','lon']]
+a = latlons.apply(findij,axis=1)
+a.name = &quot;ij&quot;
+subsite = pd.concat([allsite, a], axis=1).dropna(subset=['ij'])
+
+dfs = pd.DataFrame(columns=[&quot;station&quot;,'ix','jx','pm25', 'pm10', 'o3', 'co', 'so2', 'no2'])
+
+for StationCode,ij in zip(subsite.StationCode,subsite.ij):
+    temp = read_station_hourly_data(StationCode, year, stime, etime).mean()
+    
+    dfs = pd.concat([dfs,pd.DataFrame.from_records([{&quot;station&quot;:f&quot;{ij[0]}_{ij[1]}&quot;,
+                                                     'ix':ij[0],
+                                                     'jx':ij[1],
+                                                     'pm25':temp.pm25,
+                                                     'pm10':temp.pm10,
+                                                     'o3':temp.o3,
+                                                     'co':temp.co,
+                                                     'so2':temp.so2,
+                                                     'no2':temp.no2
+                                              }])])
+dfs.groupby(&quot;station&quot;).mean().to_csv(OutFile)
+
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/z-7AN29mXH/" class="tag">
+                    data
+                  </a>
+                
+                  <a href="https://xiaodongnuist.github.io/tag/Yk4ukDetMn/" class="tag">
+                    analysis
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/数据分析及统计方法/">
+                  <h3 class="post-title">
+                    数据分析
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

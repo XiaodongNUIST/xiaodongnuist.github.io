@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>WRFChem气溶胶光学性质 | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+WRFChem中的气溶胶方案
+不同方案的验证
+
+
+WRFChem中的气溶胶方案
+
+sectional approach: MOSAIC (Model for Simulating Aerosol Interactions and Chem..." />
+    <meta name="keywords" content="WRF-Chem" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">WRFChem气溶胶光学性质</h2>
+            <div class="post-date">2022-10-25</div>
+            
+            <div class="post-content" v-pre>
+              <p><ul class="markdownIt-TOC">
+<li><a href="#wrfchem%E4%B8%AD%E7%9A%84%E6%B0%94%E6%BA%B6%E8%83%B6%E6%96%B9%E6%A1%88">WRFChem中的气溶胶方案</a></li>
+<li><a href="#%E4%B8%8D%E5%90%8C%E6%96%B9%E6%A1%88%E7%9A%84%E9%AA%8C%E8%AF%81">不同方案的验证</a></li>
+</ul>
+</p>
+<h1 id="wrfchem中的气溶胶方案">WRFChem中的气溶胶方案</h1>
+<ul>
+<li>sectional approach: <code>MOSAIC</code> (Model for Simulating Aerosol Interactions and Chemistry)</li>
+<li>modal approach: <code>MADE</code> (Modal Aerosol Dynamics Model for Europe), <code>MAM</code> (Modal Aerosol Model from CAM5)</li>
+<li>bulk approach: <code>GOCART</code> (Goddard Global Ozone Chemistry Aerosol Radiation and Transport model)</li>
+</ul>
+<h1 id="不同方案的验证">不同方案的验证</h1>
+<ul>
+<li><strong>MOSAIC</strong>
+<ul>
+<li><em><strong>Barnard et al. (2010) and Lennartson et al. (2018)</strong></em>  analyze the diurnal variation of AOD</li>
+<li><em><strong>Ghan et al. (2001)</strong></em>  evaluated the radiative impact of including coupled aerosol–cloud–radiation processes.</li>
+<li>Other studies assessing the representation of aerosol optical properties and their uncertainties using MOSAIC together with other schemes, mainly MADE <em><strong>Zhao et al., 2010, 2011, 2013; Balzarini et al., 2015; Yang et al., 2018; Saide et al., 2020</strong></em></li>
+</ul>
+</li>
+<li><strong>GOCART</strong>
+<ul>
+<li><strong>LeGrand et al., 2019</strong> compared the Air Force Weather Agency (AFWA) dust emission scheme within GOCART to other dust emission schemes available in WRF-Chem and their skills for representing AOD</li>
+<li>In this contribution, the need for tuning the model in order to get a reasonable simulation of AOD for each location and/or event was pointed out based on the results of Bian et al. (2011), Dipu et al. (2013), Kumar et al. (2014), Jish Prakash et al. (2015), Zhang et al. (2015), Kalenderski and Stenchikov (2016), and Hu et al. (2020), among others.</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/ygY1rU5SGV/" class="tag">
+                    WRF-Chem
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/WRFChem运行记录/">
+                  <h3 class="post-title">
+                    WRF/Chem模式运行记录
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

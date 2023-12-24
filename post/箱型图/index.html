@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>箱形图 | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+
+
+exam 01
+
+
+
+
+exam 01
+config = {
+    'xtick.direction': 'in',
+    'ytick.direction': 'in',
+    'xtick.major.size':  2,
+..." />
+    <meta name="keywords" content="visualization" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">箱形图</h2>
+            <div class="post-date">2022-10-25</div>
+            
+              <div class="feature-container" style="background-image: url('https://xiaodongnuist.github.io/post-images/箱型图.png')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#exam-01">exam 01</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="exam-01">exam 01</h2>
+<pre><code class="language-python">config = {
+    'xtick.direction': 'in',
+    'ytick.direction': 'in',
+    'xtick.major.size':  2,
+    'xtick.minor.size':  1.5,
+    'ytick.major.size':  2,
+    'ytick.minor.size':  1.5,
+    'xtick.top': True,
+    'ytick.right': True,  
+}
+plt.rcParams.update(config)
+
+station = &quot;1001A&quot;; years = [2014,2015,2016,2017,2018,2019,2020,2021,2022]; season = 'Summer'
+dfs = pd.DataFrame(columns=[&quot;station&quot;,&quot;region&quot;,&quot;lat&quot;,&quot;lon&quot;,'2014','2015','2016','2017','2018','2019','2020','2021','2022','slope','p'])
+fig, axs = plt.subplots(2,2,figsize=(4.8,3.2))
+axs = axs.flatten()
+arg = {'widths':0.4,'showfliers':False,'showmeans':True,'meanline':False,
+       'boxprops':{'color':'#1084d8'},
+       'medianprops':{'color':'#1084d8'},
+       'meanprops' : dict(marker='o', markeredgecolor='#1084d8',ms=2,
+                      markerfacecolor='none'),
+       'whiskerprops':{'color':'#1084d8','ls':'--'},
+       'capprops':{'color':'#1084d8'}
+      }
+
+for i, region in enumerate(cornersdict.keys()):
+    ax = axs[i]
+
+    dfres = np.loadtxt(f&quot;../obsdata/dMDA8_dPM25_day_{region}_{season}.csv&quot;)
+    ax.boxplot(dfres[:,0],positions=[0],**arg)
+    ax.boxplot(dfres[:,1],positions=[1],**arg)
+    ax.boxplot(dfres[:,2],positions=[2],**arg)
+    ax.boxplot(dfres[:,3],positions=[3],**arg)
+    ax.boxplot(dfres[:,4],positions=[4],**arg)
+    ax.boxplot(dfres[:,5],positions=[5],**arg)
+    ax.boxplot(dfres[:,6],positions=[6],**arg)
+    ax.boxplot(dfres[:,7],positions=[7],**arg)
+    ax.set_ylim(40,101)
+    ax.set_xticks([0,1,2,3,4,5,6,7])
+    ax.set_xticklabels([-1000, -30,-20,-10,0,10,20,30])
+    # ax.axhline(y=100,lw=0.5,c='k')
+    # ax.set_xticks([2015,2017,2019,2021],minor=True)
+    # ax.yaxis.set_major_locator(MultipleLocator(5))
+
+    # x = [2015,2016,2017,2018,2019,2020]
+    # y = temp[['2015','2016','2017','2018','2019','2020']].mean()
+    # slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
+    # f = np.poly1d([slope, intercept])
+    # ax.plot(x, f(x), 'r-',lw=1.)
+    # print(r_value,p_value)
+    ax.text(0.05,0.85,f&quot;{alpha[i]} {region}&quot;,transform=ax.transAxes,ha=&quot;left&quot;)
+    # ax.text(0.45,0.85,&quot;k=%.2f; $R^2$=%.2f&quot; %(slope, r_value**2),transform=ax.transAxes,ha=&quot;left&quot;,color='r')
+
+axs[0].set_ylabel(&quot;$Fraction\ (\%)$&quot;)
+axs[2].set_ylabel(&quot;$Fraction\ (\%)$&quot;)
+
+figname = f&quot;{homepath}/figures/dMDA8.dpm25.ratio_summer.png&quot;
+plt.savefig(figname, dpi=300, bbox_inches='tight',pad_inches = 0.05, facecolor='w') 
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/LCt4Cp1KS/" class="tag">
+                    visualization
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/绘图素材/">
+                  <h3 class="post-title">
+                    概念图
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

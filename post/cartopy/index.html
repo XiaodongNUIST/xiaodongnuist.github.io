@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>cartopy | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="站点散点图
+
+在地图上添加colorbar，并设置背景色
+添加方框
+
+dfs = pd.read_csv(f&quot;../obsdata/dMDA8_dPM25_day_station_{season}.csv&quot;)
+dfs =..." />
+    <meta name="keywords" content="python,visualization" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">cartopy</h2>
+            <div class="post-date">2022-10-25</div>
+            
+              <div class="feature-container" style="background-image: url('https://xiaodongnuist.github.io/post-images/cartopy.png')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="站点散点图">站点散点图</h1>
+<ul>
+<li>在地图上添加colorbar，并设置背景色</li>
+<li>添加方框</li>
+</ul>
+<pre><code class="language-python">dfs = pd.read_csv(f&quot;../obsdata/dMDA8_dPM25_day_station_{season}.csv&quot;)
+dfs = dfs.sort_values(&quot;slope&quot;)
+
+def cs_scater(ax, lat,lon,slope,p_value,colors,vmin,vmax):
+    cs = ax.scatter(lon, lat,10, slope, cmap=colors,marker=&quot;s&quot;,vmin=vmin,vmax=vmax)
+    cs2 = ax.scatter(lon[p_value&lt;0.1], lat[p_value&lt;0.1], 0.5, c=&quot;k&quot;)
+
+    ax.add_geometries(china_border.geometries(),
+                ccrs.PlateCarree(),edgecolor='k', linewidth=0.2, zorder=2,
+                facecolor='none')
+    ax.add_geometries(world_border.geometries(),
+                ccrs.PlateCarree(),edgecolor='k', linewidth=0.5, zorder=2,
+                facecolor='none')
+    #标注坐标轴
+    ax.set_extent([101,132,21,48])
+    ax.set_xticks(np.linspace(102,130,5), crs=ccrs.PlateCarree())
+    ax.set_yticks([25,30,35,40,45], crs=ccrs.PlateCarree())
+
+    #zero_direction_label用来设置经度的0度加不加E和W
+    lon_formatter = LongitudeFormatter(zero_direction_label=False)
+    lat_formatter = LatitudeFormatter()
+    ax.xaxis.set_major_formatter(lon_formatter)
+    ax.yaxis.set_major_formatter(lat_formatter)
+
+    for region, pts in cornersdict.items():
+        ax.plot([pts[0],pts[1],pts[1],pts[0],pts[0]],[pts[2],pts[2],pts[3],pts[3],pts[2]],'k-',lw=0.5)
+
+    return cs
+
+proj = ccrs.PlateCarree()
+fig = plt.figure(figsize=(3,3))
+ax = fig.add_subplot(1,1,1, projection=proj) 
+
+cs = cs_scater(ax,dfs.lat,dfs.lon,dfs.slope.values,dfs.p.values,cmaps.CBR_coldhot,-3,3)
+
+cbbox = ax.inset_axes([0.74, 0.01, 0.25, 0.15])
+[cbbox.spines[k].set_visible(False) for k in cbbox.spines]
+cbbox.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False, labelright=False, labelbottom=False)
+cbbox.set_facecolor('w')
+caxes = cbbox.inset_axes([0.1, 0.4, 0.8, 0.23])
+cbar = fig.colorbar(cs,orientation=&quot;horizontal&quot;,cax=caxes)
+cbar.ax.tick_params(axis='x', direction='in',length=5)
+cbar.set_label(&quot;$Fitted\ slope$&quot;,loc=&quot;center&quot;,labelpad=-23)
+cticks= [-3,0,3]; cbar.set_ticks(cticks); cbar.set_ticklabels(cticks)
+
+ax.text(0.05,0.9,&quot;$2015-2020$&quot;,transform=ax.transAxes,ha=&quot;left&quot;)
+
+plt.savefig(f'../figures/dMDA8_dPM25_day_station_{season}',bbox_inches='tight',pad_inches = 0.05, dpi=300, facecolor='w')
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="cartopy/dMDA8_dPM25_day_station_Summer.png" alt="dMDA8_dPM25_day_station_Summer" loading="lazy"></figure>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/OMUWPMsu2/" class="tag">
+                    python
+                  </a>
+                
+                  <a href="https://xiaodongnuist.github.io/tag/LCt4Cp1KS/" class="tag">
+                    visualization
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/matplot_maps/">
+                  <h3 class="post-title">
+                    标准地图问题
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>污染观测数据处理说明 | 文献阅读笔记</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://xiaodongnuist.github.io/favicon.ico?v=1703394041161">
+<link rel="stylesheet" href="https://xiaodongnuist.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+
+
+质量控制+转换成ppb
+
+
+
+
+质量控制+转换成ppb
+
+Concentrations were reported by the MEE in micrograms per cubic meter (µg m 3) under sta..." />
+    <meta name="keywords" content="data,analysis" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://xiaodongnuist.github.io">
+        <img src="https://xiaodongnuist.github.io/images/avatar.png?v=1703394041161" class="site-logo">
+        <h1 class="site-title">文献阅读笔记</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Xiaodong Xie
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://xiaodongnuist.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">污染观测数据处理说明</h2>
+            <div class="post-date">2022-10-25</div>
+            
+            <div class="post-content" v-pre>
+              <p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E8%B4%A8%E9%87%8F%E6%8E%A7%E5%88%B6%E8%BD%AC%E6%8D%A2%E6%88%90ppb">质量控制+转换成ppb</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="质量控制转换成ppb">质量控制+转换成ppb</h2>
+<ul>
+<li>Concentrations were reported by the MEE in micrograms per cubic meter (µg m 3) under standard conditions (273 K, 1013 hPa) until 31 August 2018.</li>
+<li>This reference state was changed on 1 September 2018 to 298 K and 1013 hPa for gases and to local ambient state for PM2.5</li>
+</ul>
+<pre><code class="language-python">from scipy.stats import zscore
+
+def qualitycontrol(x):
+    temp = zscore(x,nan_policy='omit')
+    x1 = temp[0:-2]
+    x2 = temp[1:-1]
+    x3 = temp[2:]
+    RM3 = 3*x2/(x1+x2+x3)
+    mask1 = abs(temp&gt;4)
+    mask2 = RM3&gt;2
+    mask1[1:-1] = (mask2|mask1[1:-1])
+    return np.where(mask1,np.nan,x)
+</code></pre>
+<ul>
+<li>
+<p>单位转换</p>
+<pre><code class="language-python">def convert_unit(x,T,P,M):
+    # Convert from ug/m3 to ppb
+    return x*22.41*T/273.*1013/P/M
+
+T, P = 273, 1013
+
+for year in [2013,2014,2015,2016,2017]:
+    inpdir  = f&quot;处理后数据/NoQC/{year}&quot;
+    outdir1 = f&quot;处理后数据/QC+PPB/hour/{year}&quot;
+    outdir2 = f&quot;处理后数据/QC+PPB/day/{year}&quot;
+    if( not os.path.exists(outdir1)):
+        os.makedirs(outdir1)
+    if( not os.path.exists(outdir2)):
+        os.makedirs(outdir2)
+
+    for ProvinceCode,CityCode,StationCode in zip(allsite.ProvinceCode, allsite.CityCode, allsite.StationCode):
+        fname = f&quot;{inpdir}/{ProvinceCode}_{CityCode}_{StationCode}_{year}.csv&quot;
+        if(os.path.exists(fname)):
+            data = pd.read_csv(fname)
+            data.columns = cols_order
+            data['o3']  = convert_unit(data['o3'],T,P,48)
+            data['co']  = convert_unit(data['co'],T,P,28)
+            data['so2'] = convert_unit(data['so2'],T,P,64)
+            data['no2'] = convert_unit(data['no2'],T,P,46)
+            data[cols_order].to_csv(f&quot;{outdir1}/{ProvinceCode}_{CityCode}_{StationCode}_{year}.csv&quot;,index=None)
+
+            data.index = pd.to_datetime(data.datetime,format=&quot;%Y-%m-%d %H:%M:%S&quot;)
+            dfday = data[['pm25','pm10','o3','co','so2','no2']].resample('D').apply(strongmean)
+            dfday['MDA8'] = data[&quot;o3&quot;].resample('D').apply(MDA8)
+            dfday['MDA8'] = np.where(np.isnan(dfday['o3']),np.nan,dfday['MDA8'])
+            
+            dfday['MaxO3'] = data[&quot;o3&quot;].resample('D').apply(strongmax)
+            dfday[cols_order_day].to_csv(f&quot;{outdir2}/{ProvinceCode}_{CityCode}_{StationCode}_{year}.csv&quot;)
+        else:
+            print(&quot;%s doesn't exist&quot; %(fname))
+           
+year = 2018
+T1, P1 = 273, 1013
+T2, P2 = 298, 1013
+
+inpdir  = f&quot;处理后数据/NoQC/{year}&quot;
+outdir1 = f&quot;处理后数据/QC+PPB/hour/{year}&quot;
+outdir2 = f&quot;处理后数据/QC+PPB/day/{year}&quot;
+if( not os.path.exists(outdir1)):
+    os.makedirs(outdir1)
+if( not os.path.exists(outdir2)):
+    os.makedirs(outdir2)
+
+for ProvinceCode,CityCode,StationCode in zip(allsite.ProvinceCode, allsite.CityCode, allsite.StationCode):
+    fname = f&quot;{inpdir}/{ProvinceCode}_{CityCode}_{StationCode}_{year}.csv&quot;
+    if(os.path.exists(fname)):
+        data = pd.read_csv(fname)
+        data.columns = cols_order
+        data.index = pd.to_datetime(data.datetime,format=&quot;%Y-%m-%d %H:%M:%S&quot;)
+        
+        data.loc['2018-01-01':'2018-08-31','o3']  = convert_unit(data.loc['2018-01-01':'2018-08-31','o3'] ,T1,P1,48)
+        data.loc['2018-01-01':'2018-08-31','co']  = convert_unit(data.loc['2018-01-01':'2018-08-31','co'] ,T1,P1,28)
+        data.loc['2018-01-01':'2018-08-31','so2'] = convert_unit(data.loc['2018-01-01':'2018-08-31','so2'],T1,P1,64)
+        data.loc['2018-01-01':'2018-08-31','no2'] = convert_unit(data.loc['2018-01-01':'2018-08-31','no2'],T1,P1,46)
+        
+        data.loc['2018-09-01':'2018-12-31','o3']  = convert_unit(data.loc['2018-09-01':'2018-12-31','o3'] ,T2,P2,48)
+        data.loc['2018-09-01':'2018-12-31','co']  = convert_unit(data.loc['2018-09-01':'2018-12-31','co'] ,T2,P2,28)
+        data.loc['2018-09-01':'2018-12-31','so2'] = convert_unit(data.loc['2018-09-01':'2018-12-31','so2'],T2,P2,64)
+        data.loc['2018-09-01':'2018-12-31','no2'] = convert_unit(data.loc['2018-09-01':'2018-12-31','no2'],T2,P2,46)
+        
+        data[cols_order].to_csv(f&quot;{outdir1}/{ProvinceCode}_{CityCode}_{StationCode}_{year}.csv&quot;,index=None)
+
+        dfday = data[['pm25','pm10','o3','co','so2','no2']].resample('D').apply(strongmean)
+        dfday['MDA8'] = data[&quot;o3&quot;].resample('D').apply(MDA8)
+        dfday['MDA8'] = np.where(np.isnan(dfday['o3']),np.nan,dfday['MDA8'])
+        
+        dfday['MaxO3'] = data[&quot;o3&quot;].resample('D').apply(strongmax)
+        dfday[cols_order_day].to_csv(f&quot;{outdir2}/{ProvinceCode}_{CityCode}_{StationCode}_{year}.csv&quot;)
+    else:
+        print(&quot;%s doesn't exist&quot; %(fname))
+</code></pre>
+</li>
+<li></li>
+</ul>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://xiaodongnuist.github.io/tag/z-7AN29mXH/" class="tag">
+                    data
+                  </a>
+                
+                  <a href="https://xiaodongnuist.github.io/tag/Yk4ukDetMn/" class="tag">
+                    analysis
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://xiaodongnuist.github.io/post/箱型图/">
+                  <h3 class="post-title">
+                    箱形图
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
